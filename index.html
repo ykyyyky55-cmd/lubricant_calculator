@@ -426,6 +426,10 @@
               <span>📸 사진 촬영/인식</span>
               <input type="file" id="machine-img-input" accept="image/*" capture="environment" onchange="handleMachineImageUpload(this)" class="hidden">
             </label>
+            <button onclick="openApiKeyModal()" class="text-xs bg-slate-700 hover:bg-slate-800 text-white font-bold px-2 py-1.5 rounded-lg transition flex items-center space-x-1 shadow-sm" title="외부 배포용 API 키 설정">
+              <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 7a2 2 0 012 2m4 0a6 6 0 01-7.743 5.743L11 17H9v2H7v2H4a1 1 0 01-1-1v-2.586a1 1 0 01.293-.707l5.964-5.964A6 6 0 0121 9z"></path></svg>
+              <span>🔑 API 키</span>
+            </button>
             <button onclick="openTestImageModal()" class="text-xs bg-amber-500 hover:bg-amber-600 text-white font-bold px-2.5 py-1.5 rounded-lg transition flex items-center space-x-1 shadow-sm">
               <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19.428 15.428a2 2 0 00-1.022-.547l-2.387-.477a6 6 0 00-3.86.517l-.318.158a6 6 0 01-3.86.517L6.05 15.21a2 2 0 00-1.806.547M8 4h8l-1 1v5.172a2 2 0 00.586 1.414l5 5c1.26 1.26.367 3.414-1.415 3.414H4.828c-1.782 0-2.674-2.154-1.414-3.414l5-5A2 2 0 009 10.172V5L8 4z"></path></svg>
               <span>🧪 테스트 샘플</span>
@@ -689,6 +693,39 @@
     </div>
   </div>
 
+  <!-- Gemini API Key Modal for GitHub Pages -->
+  <div id="api-key-modal" class="fixed inset-0 bg-slate-900/60 backdrop-blur-sm z-50 flex items-center justify-center p-4 hidden">
+    <div class="bg-white rounded-2xl p-6 max-w-sm w-full text-left shadow-2xl relative">
+      <button onclick="closeApiKeyModal()" class="absolute top-4 right-4 text-slate-400 hover:text-slate-600">
+        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path></svg>
+      </button>
+      <div class="flex items-center space-x-2.5 mb-3">
+        <div class="w-10 h-10 bg-indigo-100 text-indigo-700 rounded-xl flex items-center justify-center shrink-0">
+          <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 7a2 2 0 012 2m4 0a6 6 0 01-7.743 5.743L11 17H9v2H7v2H4a1 1 0 01-1-1v-2.586a1 1 0 01.293-.707l5.964-5.964A6 6 0 0121 9z"></path></svg>
+        </div>
+        <div>
+          <h3 class="text-base font-bold text-slate-800">Gemini AI API 키 설정</h3>
+          <p class="text-xs text-slate-500">외부 배포 사이트 전용 설정</p>
+        </div>
+      </div>
+      <p id="api-key-notice" class="text-xs text-slate-600 mb-3 leading-relaxed">
+        GitHub Pages 등 외부 웹사이트에서 AI 사진 스캔을 사용하시려면 Google Gemini API 키(무료) 설정이 필요합니다.
+      </p>
+      <div class="mb-4">
+        <label class="text-xs font-bold text-slate-500 block mb-1">API Key</label>
+        <input type="password" id="user-api-key-input" placeholder="AIzaSy..." class="w-full px-3 py-2 border border-slate-300 rounded-lg text-xs font-mono font-bold text-slate-800 focus:ring-2 focus:ring-indigo-500 focus:outline-none">
+      </div>
+      <button onclick="saveApiKey()" class="w-full py-2.5 bg-indigo-600 hover:bg-indigo-700 text-white font-bold text-xs rounded-xl transition mb-2">
+        저장 후 적용하기
+      </button>
+      <div class="text-center">
+        <a href="https://aistudio.google.com/app/apikey" target="_blank" rel="noopener noreferrer" class="text-[11px] text-indigo-600 hover:underline font-semibold">
+          💡 무료 Gemini API 키 구하기 (Google AI Studio) ➔
+        </a>
+      </div>
+    </div>
+  </div>
+
   <!-- AI OCR Test Sample Modal -->
   <div id="test-image-modal" class="fixed inset-0 bg-slate-900/60 backdrop-blur-sm z-50 flex items-center justify-center p-4 hidden">
     <div class="bg-white rounded-2xl p-5 sm:p-6 max-w-md w-full text-center shadow-2xl relative max-h-[90vh] overflow-y-auto">
@@ -735,6 +772,35 @@
     let minTolPercent = -1.0;
     let maxTolPercent = 0.5;
     let deferredPrompt = null;
+    let customApiKey = localStorage.getItem('gemini_user_api_key') || "";
+
+    function getActiveApiKey() {
+      return customApiKey || "";
+    }
+
+    function openApiKeyModal(noticeText) {
+      const modal = document.getElementById('api-key-modal');
+      const input = document.getElementById('user-api-key-input');
+      const notice = document.getElementById('api-key-notice');
+      if (input) input.value = customApiKey;
+      if (notice && noticeText) notice.innerText = noticeText;
+      if (modal) modal.classList.remove('hidden');
+    }
+
+    function closeApiKeyModal() {
+      const modal = document.getElementById('api-key-modal');
+      if (modal) modal.classList.add('hidden');
+    }
+
+    function saveApiKey() {
+      const input = document.getElementById('user-api-key-input');
+      if (input) {
+        customApiKey = input.value.trim();
+        localStorage.setItem('gemini_user_api_key', customApiKey);
+        alert(customApiKey ? "API 키가 저장되었습니다!" : "API 키 설정이 초기화되었습니다.");
+        closeApiKeyModal();
+      }
+    }
 
     function switchTab(tabIndex) {
       const page0 = document.getElementById('page0');
@@ -1245,16 +1311,19 @@
         // Compress photo to prevent memory/payload issues on high-res phone cameras
         const { base64Data, mimeType } = await compressAndResizeImage(file);
 
-        // Call Gemini 3 Flash Vision API with enhanced prompt instructions
-        const apiKey = ""; // Runtime provided
+        const apiKey = getActiveApiKey();
         const apiUrl = `https://generativelanguage.googleapis.com/v1beta/models/gemini-3-flash-preview:generateContent?key=${apiKey}`;
 
-        const systemPrompt = "You are an industrial OCR expert. Carefully examine the photo (PLC screen, digital monitor, paper log, scale display, or machine panel) and extract the 6 filling machine recorded weight values for Line 1, Line 2, Line 3, Line 4, Line 5, Line 6. Extract numbers only (e.g. 1002.5, 990, 850.2). If there are 6 primary numbers listed, map them in order from Line 1 to Line 6.";
+        const systemPrompt = "You are an industrial OCR expert. Examine the photo (PLC screen, digital monitor, paper log, scale display, or machine panel) and extract the numeric values for 6 filling machine lines/nozzles (Line 1 to Line 6). Extract numeric values only in order for Line 1, Line 2, Line 3, Line 4, Line 5, Line 6. Return ONLY a valid JSON object matching the requested schema.";
+        
         const payload = {
+          systemInstruction: {
+            parts: [{ text: systemPrompt }]
+          },
           contents: [{
             role: "user",
             parts: [
-              { text: systemPrompt },
+              { text: "Examine this photo and extract the 6 machine recorded weight or volume numbers for Line 1 through Line 6." },
               { inlineData: { mimeType: mimeType, data: base64Data } }
             ]
           }],
@@ -1266,7 +1335,7 @@
                 lineValues: {
                   type: "ARRAY",
                   items: { type: "NUMBER" },
-                  description: "Array of exactly 6 numeric values for Line 1 to Line 6."
+                  description: "Array of numeric values for Line 1 to Line 6."
                 }
               },
               required: ["lineValues"]
@@ -1280,12 +1349,20 @@
           body: JSON.stringify(payload)
         });
 
+        // Auto-detect missing/invalid API key on GitHub Pages deployment
+        if (response.status === 400 || response.status === 403) {
+          if (loadingModal) loadingModal.classList.add('hidden');
+          openApiKeyModal("GitHub Pages 환경에서는 Google AI 스캔 기능을 작동하기 위해 무료 Gemini API 키가 필요합니다. API 키를 설정해 주세요.");
+          return;
+        }
+
         if (!response.ok) {
           throw new Error(`API response error: ${response.status}`);
         }
 
         const result = await response.json();
-        const jsonText = result?.candidates?.[0]?.content?.parts?.[0]?.text;
+        let jsonText = result?.candidates?.[0]?.content?.parts?.[0]?.text || "";
+        jsonText = jsonText.replace(/```json/gi, '').replace(/```/g, '').trim();
 
         if (jsonText) {
           const parsed = JSON.parse(jsonText);
@@ -1311,17 +1388,17 @@
           if (updatedCount > 0) {
             // Success alert with extracted values
             setTimeout(() => {
-              alert(`✨ AI 사진 인식 완료! (${updatedCount}개 라인 수치 추출됨)\n\n[추출 결과]\n` + summaryList.join("\n") + "\n\n실측값 입력 후 권장 설정값을 확인하세요.");
+              alert(`✨ AI 사진 인식 성공! (${updatedCount}개 라인 수치 추출됨)\n\n[추출 결과]\n` + summaryList.join("\n") + "\n\n실측값을 입력하여 권장 설정값을 확인하세요.");
             }, 100);
           } else {
-            alert("사진에서 수치를 찾지 못했습니다. 화면의 숫자가 선명하게 보이도록 밝은 곳에서 정면으로 찍어주세요.");
+            alert("사진에서 수치를 찾지 못했습니다. 기계 화면의 숫자가 정면에서 선명하게 보이도록 다시 촬영해 주세요.");
           }
         } else {
           alert("사진 분석 결과를 가져오지 못했습니다. 숫자가 선명하게 보이도록 다시 촬영해 보세요.");
         }
       } catch (err) {
         console.error("AI Photo Recognition error:", err);
-        alert("사진 인식 처리 중 문제가 발생했습니다. 수치가 선명하게 나온 사진인지 확인 후 다시 시도해 주세요.");
+        alert("사진 인식 처리 중 문제가 발생했습니다: " + (err.message || "다시 시도해 주세요."));
       } finally {
         if (loadingModal) loadingModal.classList.add('hidden');
       }
