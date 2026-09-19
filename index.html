@@ -426,6 +426,10 @@
               <span>📸 사진 촬영/인식</span>
               <input type="file" id="machine-img-input" accept="image/*" capture="environment" onchange="handleMachineImageUpload(this)" class="hidden">
             </label>
+            <button onclick="openTestImageModal()" class="text-xs bg-amber-500 hover:bg-amber-600 text-white font-bold px-2.5 py-1.5 rounded-lg transition flex items-center space-x-1 shadow-sm">
+              <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19.428 15.428a2 2 0 00-1.022-.547l-2.387-.477a6 6 0 00-3.86.517l-.318.158a6 6 0 01-3.86.517L6.05 15.21a2 2 0 00-1.806.547M8 4h8l-1 1v5.172a2 2 0 00.586 1.414l5 5c1.26 1.26.367 3.414-1.415 3.414H4.828c-1.782 0-2.674-2.154-1.414-3.414l5-5A2 2 0 009 10.172V5L8 4z"></path></svg>
+              <span>🧪 테스트 샘플</span>
+            </button>
             <button onclick="fillSampleMultiLine()" class="text-xs bg-indigo-50 hover:bg-indigo-100 text-indigo-700 font-bold px-2.5 py-1.5 rounded-lg border border-indigo-200 transition">
               샘플 값 입력
             </button>
@@ -682,6 +686,44 @@
         <h3 class="text-base font-bold text-slate-800">AI 사진 분석 중...</h3>
         <p class="text-xs text-slate-500 mt-1">기계 화면의 6개 라인 수치를 추출하고 있습니다.</p>
       </div>
+    </div>
+  </div>
+
+  <!-- AI OCR Test Sample Modal -->
+  <div id="test-image-modal" class="fixed inset-0 bg-slate-900/60 backdrop-blur-sm z-50 flex items-center justify-center p-4 hidden">
+    <div class="bg-white rounded-2xl p-5 sm:p-6 max-w-md w-full text-center shadow-2xl relative max-h-[90vh] overflow-y-auto">
+      <button onclick="closeTestImageModal()" class="absolute top-4 right-4 text-slate-400 hover:text-slate-600">
+        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path></svg>
+      </button>
+
+      <div class="flex items-center space-x-2 text-left mb-3">
+        <div class="w-8 h-8 bg-amber-100 text-amber-700 rounded-lg flex items-center justify-center shrink-0">
+          <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19.428 15.428a2 2 0 00-1.022-.547l-2.387-.477a6 6 0 00-3.86.517l-.318.158a6 6 0 01-3.86.517L6.05 15.21a2 2 0 00-1.806.547M8 4h8l-1 1v5.172a2 2 0 00.586 1.414l5 5c1.26 1.26.367 3.414-1.415 3.414H4.828c-1.782 0-2.674-2.154-1.414-3.414l5-5A2 2 0 009 10.172V5L8 4z"></path></svg>
+        </div>
+        <div>
+          <h3 class="text-base font-bold text-slate-800">AI 스캔 테스트용 샘플 화면</h3>
+          <p class="text-xs text-slate-500">실제 PLC 기계 모니터 화면 예시 이미지입니다.</p>
+        </div>
+      </div>
+
+      <!-- Sample PLC Canvas Display -->
+      <div class="bg-slate-900 rounded-xl p-2 mb-4 shadow-inner overflow-hidden border border-slate-700">
+        <canvas id="sample-plc-canvas" width="600" height="380" class="w-full h-auto rounded-lg block"></canvas>
+      </div>
+
+      <div class="grid grid-cols-2 gap-2 text-xs">
+        <button onclick="runAITestFromCanvas()" class="py-2.5 px-3 bg-emerald-600 hover:bg-emerald-700 text-white font-bold rounded-xl transition flex items-center justify-center space-x-1 shadow-sm">
+          <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"></path></svg>
+          <span>이 이미지로 AI 바로 테스트</span>
+        </button>
+        <button onclick="downloadSamplePLCImage()" class="py-2.5 px-3 bg-slate-100 hover:bg-slate-200 text-slate-700 font-bold rounded-xl transition flex items-center justify-center space-x-1 border border-slate-300">
+          <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"></path></svg>
+          <span>이미지 저장 (촬영용)</span>
+        </button>
+      </div>
+      <p class="text-[11px] text-slate-400 mt-2 text-left leading-relaxed">
+        💡 <strong>촬영 테스트 안내:</strong> 다운로드한 이미지를 PC나 다른 화면에 띄워둔 후 <strong>'📸 사진 촬영/인식'</strong> 버튼으로 직접 촬영해 검증할 수도 있습니다.
+      </p>
     </div>
   </div>
 
@@ -1149,20 +1191,65 @@
     async function handleMachineImageUpload(input) {
       if (!input.files || !input.files[0]) return;
       const file = input.files[0];
+      await processMachineImageFile(file);
+      input.value = ""; // Reset file input
+    }
 
+    // Helper: Compress & Resize Large Mobile Camera Photos for Faster & Reliable AI OCR
+    function compressAndResizeImage(file, maxDimension = 1280) {
+      return new Promise((resolve) => {
+        const reader = new FileReader();
+        reader.onload = (e) => {
+          const img = new Image();
+          img.onload = () => {
+            let width = img.width;
+            let height = img.height;
+            if (width > maxDimension || height > maxDimension) {
+              if (width > height) {
+                height = Math.round((height * maxDimension) / width);
+                width = maxDimension;
+              } else {
+                width = Math.round((width * maxDimension) / height);
+                height = maxDimension;
+              }
+            }
+            const canvas = document.createElement('canvas');
+            canvas.width = width;
+            canvas.height = height;
+            const ctx = canvas.getContext('2d');
+            ctx.drawImage(img, 0, 0, width, height);
+
+            const dataUrl = canvas.toDataURL('image/jpeg', 0.85);
+            const base64Data = dataUrl.split(',')[1];
+            resolve({ base64Data, mimeType: 'image/jpeg' });
+          };
+          img.onerror = () => {
+            // Fallback if image load fails
+            fileToBase64Data(file).then(b64 => resolve({ base64Data: b64, mimeType: file.type || 'image/jpeg' }));
+          };
+          img.src = e.target.result;
+        };
+        reader.onerror = () => {
+          fileToBase64Data(file).then(b64 => resolve({ base64Data: b64, mimeType: file.type || 'image/jpeg' }));
+        };
+        reader.readAsDataURL(file);
+      });
+    }
+
+    async function processMachineImageFile(file) {
       // Show AI Loading Modal
       const loadingModal = document.getElementById('ai-loading-modal');
       if (loadingModal) loadingModal.classList.remove('hidden');
 
       try {
-        const base64Data = await fileToBase64Data(file);
-        const mimeType = file.type || 'image/jpeg';
+        // Compress photo to prevent memory/payload issues on high-res phone cameras
+        const { base64Data, mimeType } = await compressAndResizeImage(file);
 
-        // Call Gemini 3 Flash Vision API for structured numbers extraction
+        // Call Gemini 3 Flash Vision API with enhanced prompt instructions
         const apiKey = ""; // Runtime provided
         const apiUrl = `https://generativelanguage.googleapis.com/v1beta/models/gemini-3-flash-preview:generateContent?key=${apiKey}`;
 
-        const systemPrompt = "Extract 6 numeric machine filling values for line 1 through line 6 from the user photo (e.g. machine monitor, display, paper log, scale). Return JSON array containing 6 numbers.";
+        const systemPrompt = "You are an industrial OCR expert. Carefully examine the photo (PLC screen, digital monitor, paper log, scale display, or machine panel) and extract the 6 filling machine recorded weight values for Line 1, Line 2, Line 3, Line 4, Line 5, Line 6. Extract numbers only (e.g. 1002.5, 990, 850.2). If there are 6 primary numbers listed, map them in order from Line 1 to Line 6.";
         const payload = {
           contents: [{
             role: "user",
@@ -1179,7 +1266,7 @@
                 lineValues: {
                   type: "ARRAY",
                   items: { type: "NUMBER" },
-                  description: "Array of 6 numbers corresponding to machine recorded values for line 1 to 6."
+                  description: "Array of exactly 6 numeric values for Line 1 to Line 6."
                 }
               },
               required: ["lineValues"]
@@ -1193,6 +1280,10 @@
           body: JSON.stringify(payload)
         });
 
+        if (!response.ok) {
+          throw new Error(`API response error: ${response.status}`);
+        }
+
         const result = await response.json();
         const jsonText = result?.candidates?.[0]?.content?.parts?.[0]?.text;
 
@@ -1200,23 +1291,168 @@
           const parsed = JSON.parse(jsonText);
           const lineValues = parsed.lineValues || [];
 
+          let updatedCount = 0;
+          let summaryList = [];
+
           for (let i = 1; i <= 6; i++) {
-            if (lineValues[i - 1] !== undefined && !isNaN(lineValues[i - 1])) {
+            const val = lineValues[i - 1];
+            if (val !== undefined && !isNaN(val) && val !== null) {
               const machineInputEl = document.getElementById(`line-${i}-machine`);
-              if (machineInputEl) machineInputEl.value = lineValues[i - 1];
+              if (machineInputEl) {
+                machineInputEl.value = val;
+                updatedCount++;
+                summaryList.push(`Line ${i}: ${val}g`);
+              }
             }
           }
+
           calculateMultiLineCompensation();
+
+          if (updatedCount > 0) {
+            // Success alert with extracted values
+            setTimeout(() => {
+              alert(`✨ AI 사진 인식 완료! (${updatedCount}개 라인 수치 추출됨)\n\n[추출 결과]\n` + summaryList.join("\n") + "\n\n실측값 입력 후 권장 설정값을 확인하세요.");
+            }, 100);
+          } else {
+            alert("사진에서 수치를 찾지 못했습니다. 화면의 숫자가 선명하게 보이도록 밝은 곳에서 정면으로 찍어주세요.");
+          }
         } else {
-          alert("사진에서 수치를 정확히 읽지 못했습니다. 기계 화면이 잘 보이도록 다시 촬영해 보세요.");
+          alert("사진 분석 결과를 가져오지 못했습니다. 숫자가 선명하게 보이도록 다시 촬영해 보세요.");
         }
       } catch (err) {
         console.error("AI Photo Recognition error:", err);
-        alert("사진 인식 중 오류가 발생했습니다. 수동으로 입력해 주세요.");
+        alert("사진 인식 처리 중 문제가 발생했습니다. 수치가 선명하게 나온 사진인지 확인 후 다시 시도해 주세요.");
       } finally {
         if (loadingModal) loadingModal.classList.add('hidden');
-        input.value = ""; // Reset file input
       }
+    }
+
+    // Test Image Sample Modal Logic
+    function openTestImageModal() {
+      const modal = document.getElementById('test-image-modal');
+      if (modal) modal.classList.remove('hidden');
+      drawSamplePLCCanvas();
+    }
+
+    function closeTestImageModal() {
+      const modal = document.getElementById('test-image-modal');
+      if (modal) modal.classList.add('hidden');
+    }
+
+    function drawSamplePLCCanvas() {
+      const canvas = document.getElementById('sample-plc-canvas');
+      if (!canvas) return;
+      const ctx = canvas.getContext('2d');
+      const w = canvas.width;
+      const h = canvas.height;
+
+      // Dark Industrial Monitor BG
+      ctx.fillStyle = '#0f172a';
+      ctx.fillRect(0, 0, w, h);
+
+      // Top Header Bar
+      ctx.fillStyle = '#1e293b';
+      ctx.fillRect(0, 0, w, 50);
+
+      // Status LED
+      ctx.beginPath();
+      ctx.arc(25, 25, 8, 0, Math.PI * 2);
+      ctx.fillStyle = '#10b981';
+      ctx.fill();
+
+      ctx.fillStyle = '#f8fafc';
+      ctx.font = 'bold 16px sans-serif';
+      ctx.fillText('DAELIM PLC AUTOMATED NOZZLE MONITOR', 45, 31);
+
+      ctx.fillStyle = '#64748b';
+      ctx.font = '12px sans-serif';
+      ctx.fillText('FILLING RECORD (UNIT: g)', w - 175, 31);
+
+      // Grid of 6 Lines
+      const values = [
+        { label: 'LINE 1', val: '1002.5 g', color: '#38bdf8' },
+        { label: 'LINE 2', val: '991.0 g', color: '#fbbf24' },
+        { label: 'LINE 3', val: '1008.2 g', color: '#f87171' },
+        { label: 'LINE 4', val: '994.8 g', color: '#fbbf24' },
+        { label: 'LINE 5', val: '1005.1 g', color: '#f87171' },
+        { label: 'LINE 6', val: '999.4 g', color: '#34d399' },
+      ];
+
+      const cols = 2;
+      const cardW = (w - 30) / cols;
+      const cardH = 90;
+
+      values.forEach((item, idx) => {
+        const row = Math.floor(idx / cols);
+        const col = idx % cols;
+        const x = 10 + col * (cardW + 10);
+        const y = 65 + row * (cardH + 10);
+
+        // Card BG
+        ctx.fillStyle = '#1e293b';
+        ctx.beginPath();
+        if (ctx.roundRect) {
+          ctx.roundRect(x, y, cardW, cardH, 8);
+        } else {
+          ctx.rect(x, y, cardW, cardH);
+        }
+        ctx.fill();
+
+        ctx.strokeStyle = '#334155';
+        ctx.lineWidth = 1;
+        ctx.stroke();
+
+        // Label
+        ctx.fillStyle = '#94a3b8';
+        ctx.font = 'bold 14px sans-serif';
+        ctx.fillText(item.label, x + 15, y + 30);
+
+        // Digital Value LCD Display Box
+        ctx.fillStyle = '#020617';
+        ctx.beginPath();
+        if (ctx.roundRect) {
+          ctx.roundRect(x + 100, y + 12, cardW - 115, cardH - 24, 6);
+        } else {
+          ctx.rect(x + 100, y + 12, cardW - 115, cardH - 24);
+        }
+        ctx.fill();
+
+        // Value text
+        ctx.fillStyle = item.color;
+        ctx.font = 'bold 22px monospace';
+        ctx.textAlign = 'right';
+        ctx.fillText(item.val, x + cardW - 25, y + 53);
+        ctx.textAlign = 'left';
+      });
+
+      // Bottom Status Line
+      ctx.fillStyle = '#334155';
+      ctx.fillRect(0, h - 25, w, 25);
+      ctx.fillStyle = '#94a3b8';
+      ctx.font = '11px monospace';
+      ctx.fillText('SYSTEM OK | BATCH #402 | CYCLE TIME: 2.8s', 15, h - 8);
+    }
+
+    function runAITestFromCanvas() {
+      const canvas = document.getElementById('sample-plc-canvas');
+      if (!canvas) return;
+
+      canvas.toBlob((blob) => {
+        if (!blob) return;
+        const testFile = new File([blob], "sample_plc_screen.png", { type: "image/png" });
+        closeTestImageModal();
+        processMachineImageFile(testFile);
+      }, 'image/png');
+    }
+
+    function downloadSamplePLCImage() {
+      const canvas = document.getElementById('sample-plc-canvas');
+      if (!canvas) return;
+
+      const link = document.createElement('a');
+      link.download = '대림윤활유_자동화라인_기계화면_샘플.png';
+      link.href = canvas.toDataURL('image/png');
+      link.click();
     }
 
     function fileToBase64Data(file) {
