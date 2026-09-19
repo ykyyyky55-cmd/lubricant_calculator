@@ -10,6 +10,7 @@
     body {
       font-family: 'Noto Sans KR', sans-serif;
       background-color: #edf4fc;
+      -webkit-tap-highlight-color: transparent;
     }
     .daelim-blue { color: #003BA8; }
     .bg-daelim-blue { background-color: #003BA8; }
@@ -27,33 +28,43 @@
       font-weight: 500;
       transition: all 0.2s ease;
     }
+
+    /* Prevent auto-zoom on iOS safari for inputs */
+    input[type="number"], select {
+      font-size: 16px !important;
+    }
+    @media (min-width: 640px) {
+      input[type="number"], select {
+        font-size: 1rem !important;
+      }
+    }
   </style>
 </head>
-<body class="min-h-screen pb-12 text-slate-800">
+<body class="min-h-screen pb-12 text-slate-800 overflow-x-hidden">
 
   <!-- Header Section -->
   <header class="bg-white border-b border-slate-200 sticky top-0 z-50 shadow-sm">
-    <div class="max-w-5xl mx-auto px-4 py-3 flex items-center justify-between">
-      <div class="flex items-center space-x-3">
+    <div class="max-w-5xl mx-auto px-3 sm:px-4 py-2.5 sm:py-3 flex items-center justify-between gap-2">
+      <div class="flex items-center space-x-2 sm:space-x-3 min-w-0">
         <!-- DAELIM Vector Logo -->
-        <svg class="h-7 md:h-8 w-auto fill-[#003BA8]" viewBox="0 0 320 60" xmlns="http://www.w3.org/2000/svg">
+        <svg class="h-6 sm:h-7 md:h-8 w-auto fill-[#003BA8] shrink-0" viewBox="0 0 320 60" xmlns="http://www.w3.org/2000/svg">
           <text x="0" y="50" font-family="'Arial Black', 'Impact', sans-serif" font-weight="900" font-size="58" letter-spacing="-1.5">DAELIM</text>
         </svg>
-        <div class="h-6 w-px bg-slate-300 mx-1"></div>
-        <h1 class="text-base md:text-xl font-bold text-slate-800 tracking-tight">
-          윤활유 충진 용량/중량 환산 및 보정계산기
+        <div class="h-5 sm:h-6 w-px bg-slate-300 shrink-0"></div>
+        <h1 class="text-xs sm:text-base md:text-xl font-bold text-slate-800 tracking-tight truncate">
+          윤활유 충진 보정계산기
         </h1>
       </div>
       
-      <div class="flex items-center space-x-2">
+      <div class="flex items-center space-x-1.5 sm:space-x-2 shrink-0">
         <!-- QR Code Trigger Button -->
-        <button onclick="toggleQRModal()" class="flex items-center space-x-1.5 text-xs bg-blue-50 hover:bg-blue-100 text-blue-800 font-semibold px-2.5 py-1.5 rounded-lg border border-blue-200 transition">
-          <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <button onclick="toggleQRModal()" class="flex items-center space-x-1 sm:space-x-1.5 text-[11px] sm:text-xs bg-blue-50 hover:bg-blue-100 text-blue-800 font-semibold px-2 sm:px-2.5 py-1.5 rounded-lg border border-blue-200 transition">
+          <svg class="w-3.5 h-3.5 sm:w-4 sm:h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v1m6 11h2m-6 0h-2v4m0-4v-3m0 0h3m-3 0h-3m-2-5h4M6 4h4v4H6V4zm10 0h4v4h-4V4zM6 14h4v4H6v-4z"></path>
           </svg>
-          <span class="hidden sm:inline">모바일 QR</span>
+          <span class="inline">QR</span>
         </button>
-        <div class="hidden sm:block text-xs font-medium text-slate-500 bg-slate-100 px-2.5 py-1.5 rounded-full">
+        <div class="hidden md:block text-xs font-medium text-slate-500 bg-slate-100 px-2.5 py-1.5 rounded-full">
           v2.0 스마트 충진용
         </div>
       </div>
@@ -61,33 +72,33 @@
   </header>
 
   <!-- Main Container -->
-  <main class="max-w-5xl mx-auto px-4 mt-6">
+  <main class="max-w-5xl mx-auto px-3 sm:px-4 mt-4 sm:mt-6">
 
     <!-- Tab Navigation Bar -->
-    <div class="grid grid-cols-2 gap-2 bg-blue-100/80 p-1.5 rounded-xl mb-6">
-      <button id="tab1-btn" onclick="switchTab(1)" class="tab-btn active py-3 px-3 md:px-4 rounded-lg text-xs md:text-base flex items-center justify-center space-x-2">
-        <svg class="w-4 h-4 md:w-5 md:h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 7h6m0 10v-3m-3 3h.01M9 17h.01M9 14h.01M12 14h.01M15 11h.01M12 11h.01M9 11h.01M7 21h10a2 2 0 002-2V5a2 2 0 00-2-2H7a2 2 0 00-2 2v14a2 2 0 002 2z"></path></svg>
-        <span>1. 용량/중량 환산 & 허용범위</span>
+    <div class="grid grid-cols-2 gap-1.5 sm:gap-2 bg-blue-100/80 p-1 rounded-xl mb-4 sm:mb-6">
+      <button id="tab1-btn" onclick="switchTab(1)" class="tab-btn active py-2.5 sm:py-3 px-2 sm:px-4 rounded-lg text-xs sm:text-sm md:text-base flex items-center justify-center space-x-1 sm:space-x-2">
+        <svg class="w-4 h-4 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 7h6m0 10v-3m-3 3h.01M9 17h.01M9 14h.01M12 14h.01M15 11h.01M12 11h.01M9 11h.01M7 21h10a2 2 0 002-2V5a2 2 0 00-2-2H7a2 2 0 00-2 2v14a2 2 0 002 2z"></path></svg>
+        <span class="truncate">1. 환산 & 허용범위</span>
       </button>
-      <button id="tab2-btn" onclick="switchTab(2)" class="tab-btn py-3 px-3 md:px-4 rounded-lg text-xs md:text-base flex items-center justify-center space-x-2">
-        <svg class="w-4 h-4 md:w-5 md:h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6V4m0 2a2 2 0 100 4m0-4a2 2 0 110 4m-6 8a2 2 0 100-4m0 4a2 2 0 110-4m0 4v2m0-6V4m6 6v10m6-2a2 2 0 100-4m0 4a2 2 0 110-4m0 4v2m0-6V4"></path></svg>
-        <span>2. 오차 보정 & 온도 계산기</span>
+      <button id="tab2-btn" onclick="switchTab(2)" class="tab-btn py-2.5 sm:py-3 px-2 sm:px-4 rounded-lg text-xs sm:text-sm md:text-base flex items-center justify-center space-x-1 sm:space-x-2">
+        <svg class="w-4 h-4 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6V4m0 2a2 2 0 100 4m0-4a2 2 0 110 4m-6 8a2 2 0 100-4m0 4a2 2 0 110-4m0 4v2m0-6V4m6 6v10m6-2a2 2 0 100-4m0 4a2 2 0 110-4m0 4v2m0-6V4"></path></svg>
+        <span class="truncate">2. 오차 보정 & 온도</span>
       </button>
     </div>
 
     <!-- PAGE 1: 용량/중량 환산 및 포장 허용범위 -->
-    <div id="page1" class="space-y-6">
+    <div id="page1" class="space-y-4 sm:space-y-6">
 
       <!-- Density Selection Card -->
-      <div class="bg-white rounded-2xl p-5 md:p-6 shadow-sm border border-slate-200">
-        <div class="flex items-center justify-between mb-4">
-          <label class="text-sm md:text-base font-bold text-slate-800 flex items-center gap-2">
-            <span class="w-2.5 h-2.5 rounded-full bg-blue-600"></span>
-            윤활유 비중 (Specific Gravity @15°C, g/cm³)
+      <div class="bg-white rounded-xl sm:rounded-2xl p-4 sm:p-6 shadow-sm border border-slate-200">
+        <div class="flex flex-col xs:flex-row items-start xs:items-center justify-between gap-2 mb-3 sm:mb-4">
+          <label class="text-xs sm:text-sm md:text-base font-bold text-slate-800 flex items-center gap-2">
+            <span class="w-2.5 h-2.5 rounded-full bg-blue-600 shrink-0"></span>
+            윤활유 비중 (g/cm³)
           </label>
-          <div class="flex items-center space-x-2">
-            <input type="number" id="sg-input" step="0.001" min="0.700" max="1.200" value="0.850" oninput="updateDensityFromInput(this.value)" class="w-24 px-3 py-1.5 border border-slate-300 rounded-lg text-right font-bold text-blue-900 focus:ring-2 focus:ring-blue-500 focus:outline-none text-sm md:text-base">
-            <span class="text-xs md:text-sm font-semibold text-slate-500">g/cm³</span>
+          <div class="flex items-center space-x-2 self-end xs:self-auto">
+            <input type="number" id="sg-input" step="0.001" min="0.700" max="1.200" value="0.850" oninput="updateDensityFromInput(this.value)" class="w-20 sm:w-24 px-2.5 py-1.5 border border-slate-300 rounded-lg text-right font-bold text-blue-900 focus:ring-2 focus:ring-blue-500 focus:outline-none text-sm md:text-base">
+            <span class="text-xs sm:text-sm font-semibold text-slate-500">g/cm³</span>
           </div>
         </div>
 
@@ -96,54 +107,54 @@
 
         <!-- Quick Presets -->
         <div>
-          <span class="text-xs font-semibold text-slate-400 block mb-2">대표 윤활유 비중 프리셋</span>
-          <div class="grid grid-cols-2 md:grid-cols-5 gap-2">
-            <button onclick="setDensity(0.830)" class="py-2 px-3 bg-slate-50 hover:bg-blue-50 border border-slate-200 hover:border-blue-300 rounded-lg text-xs font-medium text-slate-700 transition">저점도/ATF (0.830)</button>
-            <button onclick="setDensity(0.850)" class="py-2 px-3 bg-slate-50 hover:bg-blue-50 border border-slate-200 hover:border-blue-300 rounded-lg text-xs font-medium text-slate-700 transition">엔진오일 (0.850)</button>
-            <button onclick="setDensity(0.870)" class="py-2 px-3 bg-slate-50 hover:bg-blue-50 border border-slate-200 hover:border-blue-300 rounded-lg text-xs font-medium text-slate-700 transition">유압유 (0.870)</button>
-            <button onclick="setDensity(0.890)" class="py-2 px-3 bg-slate-50 hover:bg-blue-50 border border-slate-200 hover:border-blue-300 rounded-lg text-xs font-medium text-slate-700 transition">기어유 (0.890)</button>
-            <button onclick="setDensity(0.910)" class="py-2 px-3 bg-slate-50 hover:bg-blue-50 border border-slate-200 hover:border-blue-300 rounded-lg text-xs font-medium text-slate-700 transition">중공업유 (0.910)</button>
+          <span class="text-[11px] sm:text-xs font-semibold text-slate-400 block mb-2">대표 윤활유 비중 프리셋</span>
+          <div class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-5 gap-1.5 sm:gap-2">
+            <button onclick="setDensity(0.830)" class="py-2 px-2.5 bg-slate-50 hover:bg-blue-50 border border-slate-200 hover:border-blue-300 rounded-lg text-[11px] sm:text-xs font-medium text-slate-700 transition">저점도/ATF (0.830)</button>
+            <button onclick="setDensity(0.850)" class="py-2 px-2.5 bg-slate-50 hover:bg-blue-50 border border-slate-200 hover:border-blue-300 rounded-lg text-[11px] sm:text-xs font-medium text-slate-700 transition">엔진오일 (0.850)</button>
+            <button onclick="setDensity(0.870)" class="py-2 px-2.5 bg-slate-50 hover:bg-blue-50 border border-slate-200 hover:border-blue-300 rounded-lg text-[11px] sm:text-xs font-medium text-slate-700 transition">유압유 (0.870)</button>
+            <button onclick="setDensity(0.890)" class="py-2 px-2.5 bg-slate-50 hover:bg-blue-50 border border-slate-200 hover:border-blue-300 rounded-lg text-[11px] sm:text-xs font-medium text-slate-700 transition">기어유 (0.890)</button>
+            <button onclick="setDensity(0.910)" class="py-2 px-2.5 bg-slate-50 hover:bg-blue-50 border border-slate-200 hover:border-blue-300 rounded-lg text-[11px] sm:text-xs font-medium text-slate-700 transition col-span-2 sm:col-span-1">중공업유 (0.910)</button>
           </div>
         </div>
       </div>
 
       <!-- Volume & Weight Converter Card -->
-      <div class="bg-white rounded-2xl p-5 md:p-6 shadow-sm border border-slate-200">
-        <h2 class="text-sm md:text-base font-bold text-slate-800 mb-4 flex items-center gap-2">
-          <span class="w-2.5 h-2.5 rounded-full bg-blue-600"></span>
+      <div class="bg-white rounded-xl sm:rounded-2xl p-4 sm:p-6 shadow-sm border border-slate-200">
+        <h2 class="text-xs sm:text-sm md:text-base font-bold text-slate-800 mb-3 sm:mb-4 flex items-center gap-2">
+          <span class="w-2.5 h-2.5 rounded-full bg-blue-600 shrink-0"></span>
           용량 선택 및 중량 환산
         </h2>
 
         <!-- Quick Volume Buttons -->
-        <div class="mb-5">
-          <label class="text-xs font-semibold text-slate-400 block mb-2">지정 용량 빠른 선택</label>
+        <div class="mb-4">
+          <label class="text-[11px] sm:text-xs font-semibold text-slate-400 block mb-2">지정 용량 빠른 선택</label>
           <div class="flex flex-wrap gap-1.5">
-            <button onclick="selectPresetVolume(100, 'ml')" class="px-2.5 py-1.5 bg-slate-100 hover:bg-blue-600 hover:text-white rounded-md text-xs font-medium transition">100ml</button>
-            <button onclick="selectPresetVolume(350, 'ml')" class="px-2.5 py-1.5 bg-slate-100 hover:bg-blue-600 hover:text-white rounded-md text-xs font-medium transition">350ml</button>
-            <button onclick="selectPresetVolume(500, 'ml')" class="px-2.5 py-1.5 bg-slate-100 hover:bg-blue-600 hover:text-white rounded-md text-xs font-medium transition">500ml</button>
-            <button onclick="selectPresetVolume(700, 'ml')" class="px-2.5 py-1.5 bg-slate-100 hover:bg-blue-600 hover:text-white rounded-md text-xs font-medium transition">700ml</button>
-            <button onclick="selectPresetVolume(750, 'ml')" class="px-2.5 py-1.5 bg-slate-100 hover:bg-blue-600 hover:text-white rounded-md text-xs font-medium transition">750ml</button>
-            <button onclick="selectPresetVolume(1000, 'ml')" class="px-2.5 py-1.5 bg-slate-100 hover:bg-blue-600 hover:text-white rounded-md text-xs font-medium transition">1,000ml</button>
-            <button onclick="selectPresetVolume(2000, 'ml')" class="px-2.5 py-1.5 bg-slate-100 hover:bg-blue-600 hover:text-white rounded-md text-xs font-medium transition">2,000ml</button>
-            <button onclick="selectPresetVolume(3000, 'ml')" class="px-2.5 py-1.5 bg-slate-100 hover:bg-blue-600 hover:text-white rounded-md text-xs font-medium transition">3,000ml</button>
-            <button onclick="selectPresetVolume(4000, 'ml')" class="px-2.5 py-1.5 bg-slate-100 hover:bg-blue-600 hover:text-white rounded-md text-xs font-medium transition">4,000ml</button>
-            <button onclick="selectPresetVolume(6000, 'ml')" class="px-2.5 py-1.5 bg-slate-100 hover:bg-blue-600 hover:text-white rounded-md text-xs font-medium transition">6,000ml</button>
-            <button onclick="selectPresetVolume(10, 'L')" class="px-2.5 py-1.5 bg-slate-100 hover:bg-blue-600 hover:text-white rounded-md text-xs font-medium transition">10L</button>
-            <button onclick="selectPresetVolume(20, 'L')" class="px-2.5 py-1.5 bg-slate-100 hover:bg-blue-600 hover:text-white rounded-md text-xs font-medium transition">20L</button>
-            <button onclick="selectPresetVolume(100, 'L')" class="px-2.5 py-1.5 bg-slate-100 hover:bg-blue-600 hover:text-white rounded-md text-xs font-medium transition">100L</button>
-            <button onclick="selectPresetVolume(200, 'L')" class="px-2.5 py-1.5 bg-slate-100 hover:bg-blue-600 hover:text-white rounded-md text-xs font-medium transition">200L</button>
-            <button onclick="selectPresetVolume(1000, 'L')" class="px-2.5 py-1.5 bg-slate-100 hover:bg-blue-600 hover:text-white rounded-md text-xs font-medium transition">1,000L</button>
+            <button onclick="selectPresetVolume(100, 'ml')" class="px-2 py-1.5 bg-slate-100 hover:bg-blue-600 hover:text-white rounded-md text-[11px] sm:text-xs font-medium transition">100ml</button>
+            <button onclick="selectPresetVolume(350, 'ml')" class="px-2 py-1.5 bg-slate-100 hover:bg-blue-600 hover:text-white rounded-md text-[11px] sm:text-xs font-medium transition">350ml</button>
+            <button onclick="selectPresetVolume(500, 'ml')" class="px-2 py-1.5 bg-slate-100 hover:bg-blue-600 hover:text-white rounded-md text-[11px] sm:text-xs font-medium transition">500ml</button>
+            <button onclick="selectPresetVolume(700, 'ml')" class="px-2 py-1.5 bg-slate-100 hover:bg-blue-600 hover:text-white rounded-md text-[11px] sm:text-xs font-medium transition">700ml</button>
+            <button onclick="selectPresetVolume(750, 'ml')" class="px-2 py-1.5 bg-slate-100 hover:bg-blue-600 hover:text-white rounded-md text-[11px] sm:text-xs font-medium transition">750ml</button>
+            <button onclick="selectPresetVolume(1000, 'ml')" class="px-2 py-1.5 bg-slate-100 hover:bg-blue-600 hover:text-white rounded-md text-[11px] sm:text-xs font-medium transition">1,000ml</button>
+            <button onclick="selectPresetVolume(2000, 'ml')" class="px-2 py-1.5 bg-slate-100 hover:bg-blue-600 hover:text-white rounded-md text-[11px] sm:text-xs font-medium transition">2,000ml</button>
+            <button onclick="selectPresetVolume(3000, 'ml')" class="px-2 py-1.5 bg-slate-100 hover:bg-blue-600 hover:text-white rounded-md text-[11px] sm:text-xs font-medium transition">3,000ml</button>
+            <button onclick="selectPresetVolume(4000, 'ml')" class="px-2 py-1.5 bg-slate-100 hover:bg-blue-600 hover:text-white rounded-md text-[11px] sm:text-xs font-medium transition">4,000ml</button>
+            <button onclick="selectPresetVolume(6000, 'ml')" class="px-2 py-1.5 bg-slate-100 hover:bg-blue-600 hover:text-white rounded-md text-[11px] sm:text-xs font-medium transition">6,000ml</button>
+            <button onclick="selectPresetVolume(10, 'L')" class="px-2 py-1.5 bg-slate-100 hover:bg-blue-600 hover:text-white rounded-md text-[11px] sm:text-xs font-medium transition">10L</button>
+            <button onclick="selectPresetVolume(20, 'L')" class="px-2 py-1.5 bg-slate-100 hover:bg-blue-600 hover:text-white rounded-md text-[11px] sm:text-xs font-medium transition">20L</button>
+            <button onclick="selectPresetVolume(100, 'L')" class="px-2 py-1.5 bg-slate-100 hover:bg-blue-600 hover:text-white rounded-md text-[11px] sm:text-xs font-medium transition">100L</button>
+            <button onclick="selectPresetVolume(200, 'L')" class="px-2 py-1.5 bg-slate-100 hover:bg-blue-600 hover:text-white rounded-md text-[11px] sm:text-xs font-medium transition">200L</button>
+            <button onclick="selectPresetVolume(1000, 'L')" class="px-2 py-1.5 bg-slate-100 hover:bg-blue-600 hover:text-white rounded-md text-[11px] sm:text-xs font-medium transition">1,000L</button>
           </div>
         </div>
 
         <!-- Custom Direct Input Grid -->
-        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-3 sm:gap-4">
           <!-- Volume Input -->
-          <div class="bg-slate-50 p-4 rounded-xl border border-slate-200">
-            <label class="text-xs font-bold text-slate-500 uppercase tracking-wider block mb-2">충진 용량 (부피)</label>
+          <div class="bg-slate-50 p-3.5 sm:p-4 rounded-xl border border-slate-200">
+            <label class="text-[11px] sm:text-xs font-bold text-slate-500 uppercase tracking-wider block mb-1.5">충진 용량 (부피)</label>
             <div class="flex">
-              <input type="number" id="vol-val" value="1000" min="0" step="any" oninput="calculateFromVolume()" class="flex-1 px-4 py-2.5 bg-white border border-slate-300 rounded-l-xl font-bold text-lg text-slate-800 focus:ring-2 focus:ring-blue-500 focus:outline-none">
-              <select id="vol-unit" onchange="calculateFromVolume()" class="bg-slate-200 border border-l-0 border-slate-300 rounded-r-xl px-3 font-semibold text-slate-700 cursor-pointer">
+              <input type="number" id="vol-val" value="1000" min="0" step="any" oninput="calculateFromVolume()" class="flex-1 min-w-0 px-3 py-2 bg-white border border-slate-300 rounded-l-xl font-bold text-base sm:text-lg text-slate-800 focus:ring-2 focus:ring-blue-500 focus:outline-none">
+              <select id="vol-unit" onchange="calculateFromVolume()" class="bg-slate-200 border border-l-0 border-slate-300 rounded-r-xl px-2.5 sm:px-3 font-semibold text-xs sm:text-sm text-slate-700 cursor-pointer">
                 <option value="ml">mL</option>
                 <option value="L">L</option>
               </select>
@@ -151,76 +162,77 @@
           </div>
 
           <!-- Weight Output Card (Dual Units Displayed) -->
-          <div class="bg-blue-50 p-4 rounded-xl border border-blue-200">
-            <label class="text-xs font-bold text-blue-700 uppercase tracking-wider block mb-2">환산 순 중량 (Net Weight)</label>
-            <div class="flex items-baseline space-x-2">
-              <span id="res-weight-primary" class="text-2xl font-black text-blue-900">850 g</span>
-              <span id="res-weight-secondary" class="text-sm font-semibold text-blue-600">(0.850 kg)</span>
+          <div class="bg-blue-50/80 p-3.5 sm:p-4 rounded-xl border border-blue-200 flex flex-col justify-center">
+            <label class="text-[11px] sm:text-xs font-bold text-blue-700 uppercase tracking-wider block mb-1">환산 순 중량 (Net Weight)</label>
+            <div class="flex items-baseline space-x-2 flex-wrap">
+              <span id="res-weight-primary" class="text-xl sm:text-2xl font-black text-blue-900">850 g</span>
+              <span id="res-weight-secondary" class="text-xs sm:text-sm font-semibold text-blue-600">(0.850 kg)</span>
             </div>
           </div>
         </div>
       </div>
 
       <!-- Packaging Tolerance Settings Card -->
-      <div class="bg-white rounded-2xl p-5 md:p-6 shadow-sm border border-slate-200">
-        <div class="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-4">
-          <h2 class="text-sm md:text-base font-bold text-slate-800 flex items-center gap-2">
-            <span class="w-2.5 h-2.5 rounded-full bg-blue-600"></span>
+      <div class="bg-white rounded-xl sm:rounded-2xl p-4 sm:p-6 shadow-sm border border-slate-200">
+        <div class="flex flex-col md:flex-row md:items-center justify-between gap-3 sm:gap-4 mb-4">
+          <h2 class="text-xs sm:text-sm md:text-base font-bold text-slate-800 flex items-center gap-2">
+            <span class="w-2.5 h-2.5 rounded-full bg-blue-600 shrink-0"></span>
             포장 중량 허용범위 설정
           </h2>
           <!-- Preset Tolerance Buttons -->
           <div class="flex items-center gap-1.5 flex-wrap">
-            <span class="text-xs text-slate-400 mr-1">오차 규격:</span>
-            <button onclick="setTolerancePreset(-1.0, 0.5)" class="px-2 py-1 bg-slate-100 hover:bg-slate-200 rounded text-xs font-medium text-slate-700 transition">-1.0% ~ +0.5%</button>
-            <button onclick="setTolerancePreset(-0.5, 0.5)" class="px-2 py-1 bg-slate-100 hover:bg-slate-200 rounded text-xs font-medium text-slate-700 transition">-0.5% ~ +0.5%</button>
-            <button onclick="setTolerancePreset(-1.5, 1.0)" class="px-2 py-1 bg-slate-100 hover:bg-slate-200 rounded text-xs font-medium text-slate-700 transition">-1.5% ~ +1.0%</button>
-            <button onclick="setTolerancePreset(0.0, 1.0)" class="px-2 py-1 bg-slate-100 hover:bg-slate-200 rounded text-xs font-medium text-slate-700 transition">0% ~ +1.0%</button>
+            <span class="text-[11px] sm:text-xs text-slate-400 mr-1 hidden sm:inline">오차 규격:</span>
+            <button onclick="setTolerancePreset(-0.25, 0.25)" class="px-2 py-1 bg-slate-100 hover:bg-slate-200 rounded text-[11px] sm:text-xs font-medium text-slate-700 transition">-0.25% ~ +0.25%</button>
+            <button onclick="setTolerancePreset(-0.5, 0.5)" class="px-2 py-1 bg-slate-100 hover:bg-slate-200 rounded text-[11px] sm:text-xs font-medium text-slate-700 transition">-0.5% ~ +0.5%</button>
+            <button onclick="setTolerancePreset(-1.0, 0.5)" class="px-2 py-1 bg-slate-100 hover:bg-slate-200 rounded text-[11px] sm:text-xs font-medium text-slate-700 transition">-1.0% ~ +0.5%</button>
+            <button onclick="setTolerancePreset(-1.5, 1.0)" class="px-2 py-1 bg-slate-100 hover:bg-slate-200 rounded text-[11px] sm:text-xs font-medium text-slate-700 transition">-1.5% ~ +1.0%</button>
+            <button onclick="setTolerancePreset(0.0, 1.0)" class="px-2 py-1 bg-slate-100 hover:bg-slate-200 rounded text-[11px] sm:text-xs font-medium text-slate-700 transition">0% ~ +1.0%</button>
           </div>
         </div>
 
         <!-- Custom Min/Max Inputs -->
-        <div class="grid grid-cols-2 gap-4 mb-5">
-          <div class="flex items-center space-x-2">
-            <label class="text-xs font-semibold text-slate-600">최저 허용 오차:</label>
-            <input type="number" id="tol-min" step="0.1" value="-1.0" oninput="calculateTolerance()" class="w-20 px-2 py-1 border border-slate-300 rounded text-right font-bold text-slate-700">
+        <div class="grid grid-cols-2 gap-3 sm:gap-4 mb-4 sm:mb-5">
+          <div class="flex items-center space-x-1.5 sm:space-x-2">
+            <label class="text-[11px] sm:text-xs font-semibold text-slate-600">최저 오차:</label>
+            <input type="number" id="tol-min" step="0.01" value="-1.0" oninput="calculateTolerance()" class="w-16 sm:w-20 px-2 py-1 border border-slate-300 rounded text-right font-bold text-slate-700 text-xs sm:text-sm">
             <span class="text-xs text-slate-500">%</span>
           </div>
-          <div class="flex items-center space-x-2">
-            <label class="text-xs font-semibold text-slate-600">최고 허용 오차:</label>
-            <input type="number" id="tol-max" step="0.1" value="0.5" oninput="calculateTolerance()" class="w-20 px-2 py-1 border border-slate-300 rounded text-right font-bold text-slate-700">
+          <div class="flex items-center space-x-1.5 sm:space-x-2">
+            <label class="text-[11px] sm:text-xs font-semibold text-slate-600">최고 오차:</label>
+            <input type="number" id="tol-max" step="0.01" value="0.5" oninput="calculateTolerance()" class="w-16 sm:w-20 px-2 py-1 border border-slate-300 rounded text-right font-bold text-slate-700 text-xs sm:text-sm">
             <span class="text-xs text-slate-500">%</span>
           </div>
         </div>
 
         <!-- Tolerance Display Table (g and kg Dual View) -->
-        <div class="overflow-x-auto">
-          <table class="w-full text-left text-sm">
+        <div class="overflow-x-auto -mx-1 px-1">
+          <table class="w-full text-left text-xs sm:text-sm">
             <thead>
-              <tr class="bg-slate-100 text-slate-600 text-xs font-semibold">
-                <th class="py-2.5 px-4 rounded-l-lg">구분</th>
-                <th class="py-2.5 px-4">허용 비율</th>
-                <th class="py-2.5 px-4 text-right">환산 중량 (g)</th>
-                <th class="py-2.5 px-4 text-right rounded-r-lg">환산 중량 (kg)</th>
+              <tr class="bg-slate-100 text-slate-600 text-[11px] sm:text-xs font-semibold">
+                <th class="py-2 sm:py-2.5 px-2 sm:px-4 rounded-l-lg">구분</th>
+                <th class="py-2 sm:py-2.5 px-2 sm:px-4">허용 비율</th>
+                <th class="py-2 sm:py-2.5 px-2 sm:px-4 text-right">중량 (g)</th>
+                <th class="py-2 sm:py-2.5 px-2 sm:px-4 text-right rounded-r-lg">중량 (kg)</th>
               </tr>
             </thead>
             <tbody class="divide-y divide-slate-100 font-medium">
               <tr>
-                <td class="py-3 px-4 text-slate-500">최저 허용 중량 (Min)</td>
-                <td id="table-min-rate" class="py-3 px-4 text-amber-600 font-semibold">-1.0%</td>
-                <td id="table-min-g" class="py-3 px-4 text-right font-bold text-slate-800">841.5 g</td>
-                <td id="table-min-kg" class="py-3 px-4 text-right font-bold text-slate-800">0.842 kg</td>
+                <td class="py-2.5 sm:py-3 px-2 sm:px-4 text-slate-500">최저 허용 (Min)</td>
+                <td id="table-min-rate" class="py-2.5 sm:py-3 px-2 sm:px-4 text-amber-600 font-semibold">-1.0%</td>
+                <td id="table-min-g" class="py-2.5 sm:py-3 px-2 sm:px-4 text-right font-bold text-slate-800">841.5 g</td>
+                <td id="table-min-kg" class="py-2.5 sm:py-3 px-2 sm:px-4 text-right font-bold text-slate-800">0.842 kg</td>
               </tr>
               <tr class="bg-blue-50/50">
-                <td class="py-3 px-4 text-blue-900 font-bold">기준 포장 중량 (Standard)</td>
-                <td class="py-3 px-4 text-blue-700 font-bold">100.0%</td>
-                <td id="table-std-g" class="py-3 px-4 text-right font-black text-blue-900">850 g</td>
-                <td id="table-std-kg" class="py-3 px-4 text-right font-black text-blue-900">0.850 kg</td>
+                <td class="py-2.5 sm:py-3 px-2 sm:px-4 text-blue-900 font-bold">기준 포장 (Std)</td>
+                <td class="py-2.5 sm:py-3 px-2 sm:px-4 text-blue-700 font-bold">100.0%</td>
+                <td id="table-std-g" class="py-2.5 sm:py-3 px-2 sm:px-4 text-right font-black text-blue-900">850 g</td>
+                <td id="table-std-kg" class="py-2.5 sm:py-3 px-2 sm:px-4 text-right font-black text-blue-900">0.850 kg</td>
               </tr>
               <tr>
-                <td class="py-3 px-4 text-slate-500">최고 허용 중량 (Max)</td>
-                <td id="table-max-rate" class="py-3 px-4 text-emerald-600 font-semibold">+0.5%</td>
-                <td id="table-max-g" class="py-3 px-4 text-right font-bold text-slate-800">854.3 g</td>
-                <td id="table-max-kg" class="py-3 px-4 text-right font-bold text-slate-800">0.854 kg</td>
+                <td class="py-2.5 sm:py-3 px-2 sm:px-4 text-slate-500">최고 허용 (Max)</td>
+                <td id="table-max-rate" class="py-2.5 sm:py-3 px-2 sm:px-4 text-emerald-600 font-semibold">+0.5%</td>
+                <td id="table-max-g" class="py-2.5 sm:py-3 px-2 sm:px-4 text-right font-bold text-slate-800">854.3 g</td>
+                <td id="table-max-kg" class="py-2.5 sm:py-3 px-2 sm:px-4 text-right font-bold text-slate-800">0.854 kg</td>
               </tr>
             </tbody>
           </table>
@@ -311,7 +323,7 @@
           온도 변화에 따른 실시간 비중 보정 (Thermal Expansion)
         </h2>
         <p class="text-xs text-slate-500 mb-4">
-          기준 온도(15°C)와 실제 충진 현장 오일 온도가 다를 경우, 온도팽창계수($0.00064/\text{°C}$)를 적용하여 비중을 자동 재계산합니다.
+          기준 온도(15°C)와 실제 충진 현장 오일 온도가 다를 경우, 온도팽창계수(0.00064 / °C)를 적용하여 비중을 자동 재계산합니다.
         </p>
 
         <div class="grid grid-cols-1 md:grid-cols-3 gap-4 items-center bg-slate-50 p-4 rounded-xl border border-slate-200">
@@ -417,7 +429,7 @@
 
     function toggleQRModal() {
       const modal = document.getElementById('qr-modal');
-      modal.classList.toggle('hidden');
+      if (modal) modal.classList.toggle('hidden');
     }
 
     function copyURL() {
@@ -455,6 +467,8 @@
       const tab1Btn = document.getElementById('tab1-btn');
       const tab2Btn = document.getElementById('tab2-btn');
 
+      if (!page1 || !page2 || !tab1Btn || !tab2Btn) return;
+
       if (tabIndex === 1) {
         page1.classList.remove('hidden');
         page2.classList.add('hidden');
@@ -470,25 +484,36 @@
     }
 
     function syncTab1ToTab2() {
-      document.getElementById('comp-sg').value = currentSG.toFixed(3);
+      const compSgEl = document.getElementById('comp-sg');
+      if (compSgEl) compSgEl.value = currentSG.toFixed(3);
+      
       const stdWeightGrams = currentVolInML * currentSG;
       
-      const compTargetUnit = document.getElementById('comp-target-unit').value;
-      if (compTargetUnit === 'kg') {
-        document.getElementById('comp-target').value = (stdWeightGrams / 1000).toFixed(3);
-      } else {
-        document.getElementById('comp-target').value = Math.round(stdWeightGrams);
+      const targetUnitEl = document.getElementById('comp-target-unit');
+      const targetValEl = document.getElementById('comp-target');
+      
+      if (targetUnitEl && targetValEl) {
+        const compTargetUnit = targetUnitEl.value;
+        if (compTargetUnit === 'kg') {
+          targetValEl.value = (stdWeightGrams / 1000).toFixed(3);
+        } else {
+          targetValEl.value = Math.round(stdWeightGrams);
+        }
       }
       
-      document.getElementById('temp-base-sg').value = currentSG.toFixed(3);
+      const tempBaseSgEl = document.getElementById('temp-base-sg');
+      if (tempBaseSgEl) tempBaseSgEl.value = currentSG.toFixed(3);
+      
       calculateTempSG();
       calculateCompensation();
     }
 
     function setDensity(val) {
       currentSG = parseFloat(val) || 0.850;
-      document.getElementById('sg-input').value = currentSG.toFixed(3);
-      document.getElementById('sg-slider').value = currentSG;
+      const sgInput = document.getElementById('sg-input');
+      const sgSlider = document.getElementById('sg-slider');
+      if (sgInput) sgInput.value = currentSG.toFixed(3);
+      if (sgSlider) sgSlider.value = currentSG;
       calculateFromVolume();
     }
 
@@ -496,26 +521,33 @@
       const parsed = parseFloat(val);
       if (!isNaN(parsed) && parsed > 0) {
         currentSG = parsed;
-        document.getElementById('sg-slider').value = currentSG;
+        const sgSlider = document.getElementById('sg-slider');
+        if (sgSlider) sgSlider.value = currentSG;
         calculateFromVolume();
       }
     }
 
     function updateDensityFromSlider(val) {
       currentSG = parseFloat(val) || 0.850;
-      document.getElementById('sg-input').value = currentSG.toFixed(3);
+      const sgInput = document.getElementById('sg-input');
+      if (sgInput) sgInput.value = currentSG.toFixed(3);
       calculateFromVolume();
     }
 
     function selectPresetVolume(val, unit) {
-      document.getElementById('vol-val').value = val;
-      document.getElementById('vol-unit').value = unit;
+      const volValEl = document.getElementById('vol-val');
+      const volUnitEl = document.getElementById('vol-unit');
+      if (volValEl) volValEl.value = val;
+      if (volUnitEl) volUnitEl.value = unit;
       calculateFromVolume();
     }
 
     function calculateFromVolume() {
-      const volVal = parseFloat(document.getElementById('vol-val').value) || 0;
-      const volUnit = document.getElementById('vol-unit').value;
+      const volValEl = document.getElementById('vol-val');
+      const volUnitEl = document.getElementById('vol-unit');
+      
+      const volVal = volValEl ? (parseFloat(volValEl.value) || 0) : 1000;
+      const volUnit = volUnitEl ? volUnitEl.value : 'ml';
 
       if (volUnit === 'ml') {
         currentVolInML = volVal;
@@ -525,21 +557,29 @@
 
       const weightGrams = currentVolInML * currentSG;
 
-      document.getElementById('res-weight-primary').innerText = formatWeight(weightGrams, 'g');
-      document.getElementById('res-weight-secondary').innerText = '(' + formatWeight(weightGrams, 'kg') + ')';
+      const resPrimary = document.getElementById('res-weight-primary');
+      const resSecondary = document.getElementById('res-weight-secondary');
+
+      if (resPrimary) resPrimary.innerText = formatWeight(weightGrams, 'g');
+      if (resSecondary) resSecondary.innerText = '(' + formatWeight(weightGrams, 'kg') + ')';
 
       calculateTolerance();
     }
 
     function setTolerancePreset(minVal, maxVal) {
-      document.getElementById('tol-min').value = minVal;
-      document.getElementById('tol-max').value = maxVal;
+      const tolMin = document.getElementById('tol-min');
+      const tolMax = document.getElementById('tol-max');
+      if (tolMin) tolMin.value = minVal;
+      if (tolMax) tolMax.value = maxVal;
       calculateTolerance();
     }
 
     function calculateTolerance() {
-      minTolPercent = parseFloat(document.getElementById('tol-min').value);
-      maxTolPercent = parseFloat(document.getElementById('tol-max').value);
+      const tolMin = document.getElementById('tol-min');
+      const tolMax = document.getElementById('tol-max');
+
+      minTolPercent = tolMin ? parseFloat(tolMin.value) : -1.0;
+      maxTolPercent = tolMax ? parseFloat(tolMax.value) : 0.5;
 
       if (isNaN(minTolPercent)) minTolPercent = 0;
       if (isNaN(maxTolPercent)) maxTolPercent = 0;
@@ -548,39 +588,60 @@
       const minWeightGrams = stdWeightGrams * (1 + minTolPercent / 100);
       const maxWeightGrams = stdWeightGrams * (1 + maxTolPercent / 100);
 
-      document.getElementById('table-min-rate').innerText = (minTolPercent >= 0 ? '+' : '') + minTolPercent + '%';
-      document.getElementById('table-max-rate').innerText = (maxTolPercent >= 0 ? '+' : '') + maxTolPercent + '%';
+      const tableMinRate = document.getElementById('table-min-rate');
+      const tableMaxRate = document.getElementById('table-max-rate');
+      const tableMinG = document.getElementById('table-min-g');
+      const tableMinKg = document.getElementById('table-min-kg');
+      const tableStdG = document.getElementById('table-std-g');
+      const tableStdKg = document.getElementById('table-std-kg');
+      const tableMaxG = document.getElementById('table-max-g');
+      const tableMaxKg = document.getElementById('table-max-kg');
 
-      document.getElementById('table-min-g').innerText = formatWeight(minWeightGrams, 'g');
-      document.getElementById('table-min-kg').innerText = formatWeight(minWeightGrams, 'kg');
+      if (tableMinRate) tableMinRate.innerText = (minTolPercent >= 0 ? '+' : '') + minTolPercent + '%';
+      if (tableMaxRate) tableMaxRate.innerText = (maxTolPercent >= 0 ? '+' : '') + maxTolPercent + '%';
 
-      document.getElementById('table-std-g').innerText = formatWeight(stdWeightGrams, 'g');
-      document.getElementById('table-std-kg').innerText = formatWeight(stdWeightGrams, 'kg');
+      if (tableMinG) tableMinG.innerText = formatWeight(minWeightGrams, 'g');
+      if (tableMinKg) tableMinKg.innerText = formatWeight(minWeightGrams, 'kg');
 
-      document.getElementById('table-max-g').innerText = formatWeight(maxWeightGrams, 'g');
-      document.getElementById('table-max-kg').innerText = formatWeight(maxWeightGrams, 'kg');
+      if (tableStdG) tableStdG.innerText = formatWeight(stdWeightGrams, 'g');
+      if (tableStdKg) tableStdKg.innerText = formatWeight(stdWeightGrams, 'kg');
+
+      if (tableMaxG) tableMaxG.innerText = formatWeight(maxWeightGrams, 'g');
+      if (tableMaxKg) tableMaxKg.innerText = formatWeight(maxWeightGrams, 'kg');
     }
 
     function toggleTareWeight() {
-      const isChecked = document.getElementById('use-tare').checked;
+      const useTare = document.getElementById('use-tare');
       const tareContainer = document.getElementById('tare-input-container');
-      if (isChecked) {
-        tareContainer.classList.remove('hidden');
-      } else {
-        tareContainer.classList.add('hidden');
+      if (useTare && tareContainer) {
+        if (useTare.checked) {
+          tareContainer.classList.remove('hidden');
+        } else {
+          tareContainer.classList.add('hidden');
+        }
       }
       calculateCompensation();
     }
 
     function calculateCompensation() {
-      const targetVal = parseFloat(document.getElementById('comp-target').value) || 0;
-      const targetUnit = document.getElementById('comp-target-unit').value;
-      let actualVal = parseFloat(document.getElementById('comp-actual').value) || 0;
-      const actualUnit = document.getElementById('comp-actual-unit').value;
-      const sg = parseFloat(document.getElementById('comp-sg').value) || 0.850;
+      const targetEl = document.getElementById('comp-target');
+      const targetUnitEl = document.getElementById('comp-target-unit');
+      const actualEl = document.getElementById('comp-actual');
+      const actualUnitEl = document.getElementById('comp-actual-unit');
+      const sgEl = document.getElementById('comp-sg');
 
-      const useTare = document.getElementById('use-tare').checked;
-      const tareWeight = useTare ? (parseFloat(document.getElementById('tare-weight').value) || 0) : 0;
+      if (!targetEl || !actualEl || !sgEl) return;
+
+      const targetVal = parseFloat(targetEl.value) || 0;
+      const targetUnit = targetUnitEl ? targetUnitEl.value : 'g';
+      let actualVal = parseFloat(actualEl.value) || 0;
+      const actualUnit = actualUnitEl ? actualUnitEl.value : 'g';
+      const sg = parseFloat(sgEl.value) || 0.850;
+
+      const useTareEl = document.getElementById('use-tare');
+      const tareWeightEl = document.getElementById('tare-weight');
+      const useTare = useTareEl ? useTareEl.checked : false;
+      const tareWeight = (useTare && tareWeightEl) ? (parseFloat(tareWeightEl.value) || 0) : 0;
 
       let targetGrams = targetUnit === 'kg' ? targetVal * 1000 : targetVal;
       let actualGrams = actualUnit === 'kg' ? actualVal * 1000 : actualVal;
@@ -597,6 +658,8 @@
       const mainText = document.getElementById('comp-main-text');
       const subText = document.getElementById('comp-sub-text');
       const volAdj = document.getElementById('comp-vol-adj');
+
+      if (!resultBox || !badge || !mainText || !subText || !volAdj) return;
 
       if (Math.abs(diffGrams) < 0.1) {
         resultBox.className = 'p-5 rounded-xl border bg-emerald-50 border-emerald-200 transition-all';
@@ -623,21 +686,33 @@
     }
 
     function calculateTempSG() {
-      const baseSG = parseFloat(document.getElementById('temp-base-sg').value) || 0.850;
-      const actualTemp = parseFloat(document.getElementById('temp-actual-c').value) || 15;
+      const baseSgEl = document.getElementById('temp-base-sg');
+      const tempActualEl = document.getElementById('temp-actual-c');
+      const correctedSgEl = document.getElementById('temp-corrected-sg');
+
+      if (!baseSgEl || !tempActualEl || !correctedSgEl) return;
+
+      const baseSG = parseFloat(baseSgEl.value) || 0.850;
+      const actualTemp = parseFloat(tempActualEl.value) || 15;
       
       const tempDiff = actualTemp - 15;
       const correctedSG = baseSG - (tempDiff * 0.00064);
 
-      document.getElementById('temp-corrected-sg').innerText = correctedSG.toFixed(4) + ' g/cm³';
+      correctedSgEl.innerText = correctedSG.toFixed(4) + ' g/cm³';
     }
 
     function applyTempSG() {
-      const baseSG = parseFloat(document.getElementById('temp-base-sg').value) || 0.850;
-      const actualTemp = parseFloat(document.getElementById('temp-actual-c').value) || 15;
+      const baseSgEl = document.getElementById('temp-base-sg');
+      const tempActualEl = document.getElementById('temp-actual-c');
+      const compSgEl = document.getElementById('comp-sg');
+
+      if (!baseSgEl || !tempActualEl || !compSgEl) return;
+
+      const baseSG = parseFloat(baseSgEl.value) || 0.850;
+      const actualTemp = parseFloat(tempActualEl.value) || 15;
       const correctedSG = baseSG - ((actualTemp - 15) * 0.00064);
 
-      document.getElementById('comp-sg').value = correctedSG.toFixed(4);
+      compSgEl.value = correctedSG.toFixed(4);
       calculateCompensation();
     }
 
@@ -646,3 +721,6 @@
   </script>
 </body>
 </html>
+```
+
+위 수정본을 GitHub 저장소에 커밋/업로드하시면 오류 없이 작동합니다!
