@@ -129,7 +129,7 @@
             윤활유 비중 (g/cm³)
           </label>
           <div class="flex items-center space-x-2 self-end xs:self-auto">
-            <input type="number" id="sg-input" step="0.001" min="0.700" max="1.200" value="0.850" oninput="updateDensityFromInput(this.value)" class="w-20 sm:w-24 px-2.5 py-1.5 border border-slate-300 rounded-lg text-right font-bold text-blue-900 focus:ring-2 focus:ring-blue-500 focus:outline-none text-sm md:text-base">
+            <input type="number" id="sg-input" step="0.001" min="0.700" max="1.200" value="0.850" onfocus="handleFocus(this)" oninput="updateDensityFromInput(this.value)" class="w-20 sm:w-24 px-2.5 py-1.5 border border-slate-300 rounded-lg text-right font-bold text-blue-900 focus:ring-2 focus:ring-blue-500 focus:outline-none text-sm md:text-base">
             <span class="text-xs sm:text-sm font-semibold text-slate-500">g/cm³</span>
           </div>
         </div>
@@ -185,7 +185,7 @@
           <div class="bg-slate-50 p-3.5 sm:p-4 rounded-xl border border-slate-200">
             <label class="text-[11px] sm:text-xs font-bold text-slate-500 uppercase tracking-wider block mb-1.5">충진 용량 (부피)</label>
             <div class="flex">
-              <input type="number" id="vol-val" value="1000" min="0" step="any" oninput="calculateFromVolume()" class="flex-1 min-w-0 px-3 py-2 bg-white border border-slate-300 rounded-l-xl font-bold text-base sm:text-lg text-slate-800 focus:ring-2 focus:ring-blue-500 focus:outline-none">
+              <input type="number" id="vol-val" value="1000" min="0" step="any" onfocus="handleFocus(this)" oninput="calculateFromVolume()" class="flex-1 min-w-0 px-3 py-2 bg-white border border-slate-300 rounded-l-xl font-bold text-base sm:text-lg text-slate-800 focus:ring-2 focus:ring-blue-500 focus:outline-none">
               <select id="vol-unit" onchange="calculateFromVolume()" class="bg-slate-200 border border-l-0 border-slate-300 rounded-r-xl px-2.5 sm:px-3 font-semibold text-xs sm:text-sm text-slate-700 cursor-pointer">
                 <option value="ml">mL</option>
                 <option value="L">L</option>
@@ -226,12 +226,12 @@
         <div class="grid grid-cols-2 gap-3 sm:gap-4 mb-4 sm:mb-5">
           <div class="flex items-center space-x-1.5 sm:space-x-2">
             <label class="text-[11px] sm:text-xs font-semibold text-slate-600">최저 오차:</label>
-            <input type="number" id="tol-min" step="0.01" value="-1.0" oninput="calculateTolerance()" class="w-16 sm:w-20 px-2 py-1 border border-slate-300 rounded text-right font-bold text-slate-700 text-xs sm:text-sm">
+            <input type="number" id="tol-min" step="0.01" value="-1.0" onfocus="handleFocus(this)" oninput="calculateTolerance()" class="w-16 sm:w-20 px-2 py-1 border border-slate-300 rounded text-right font-bold text-slate-700 text-xs sm:text-sm">
             <span class="text-xs text-slate-500">%</span>
           </div>
           <div class="flex items-center space-x-1.5 sm:space-x-2">
             <label class="text-[11px] sm:text-xs font-semibold text-slate-600">최고 오차:</label>
-            <input type="number" id="tol-max" step="0.01" value="0.5" oninput="calculateTolerance()" class="w-16 sm:w-20 px-2 py-1 border border-slate-300 rounded text-right font-bold text-slate-700 text-xs sm:text-sm">
+            <input type="number" id="tol-max" step="0.01" value="0.5" onfocus="handleFocus(this)" oninput="calculateTolerance()" class="w-16 sm:w-20 px-2 py-1 border border-slate-300 rounded text-right font-bold text-slate-700 text-xs sm:text-sm">
             <span class="text-xs text-slate-500">%</span>
           </div>
         </div>
@@ -292,7 +292,7 @@
           <div>
             <label class="text-xs font-bold text-slate-500 block mb-1">목표 중량 (Target Net Weight)</label>
             <div class="flex">
-              <input type="number" id="comp-target" value="850" min="0" step="any" oninput="calculateCompensation()" class="w-full px-3 py-2 border border-slate-300 rounded-l-lg font-bold text-slate-800 focus:ring-2 focus:ring-blue-500 focus:outline-none">
+              <input type="number" id="comp-target" value="850" min="0" step="any" onfocus="handleFocus(this)" oninput="calculateCompensation()" class="w-full px-3 py-2 border border-slate-300 rounded-l-lg font-bold text-slate-800 focus:ring-2 focus:ring-blue-500 focus:outline-none">
               <select id="comp-target-unit" onchange="calculateCompensation()" class="bg-slate-100 border border-l-0 border-slate-300 rounded-r-lg px-2 text-xs font-bold text-slate-600 cursor-pointer">
                 <option value="g">g</option>
                 <option value="kg">kg</option>
@@ -303,7 +303,7 @@
           <div>
             <label class="text-xs font-bold text-slate-500 block mb-1">현재 실측 중량 (Measured)</label>
             <div class="flex">
-              <input type="number" id="comp-actual" value="840" min="0" step="any" oninput="calculateCompensation()" class="w-full px-3 py-2 border border-slate-300 rounded-l-lg font-bold text-slate-800 focus:ring-2 focus:ring-blue-500 focus:outline-none">
+              <input type="number" id="comp-actual" value="840" min="0" step="any" onfocus="handleFocus(this)" oninput="calculateCompensation()" class="w-full px-3 py-2 border border-slate-300 rounded-l-lg font-bold text-slate-800 focus:ring-2 focus:ring-blue-500 focus:outline-none">
               <select id="comp-actual-unit" onchange="calculateCompensation()" class="bg-slate-100 border border-l-0 border-slate-300 rounded-r-lg px-2 text-xs font-bold text-slate-600 cursor-pointer">
                 <option value="g">g</option>
                 <option value="kg">kg</option>
@@ -313,7 +313,7 @@
 
           <div>
             <label class="text-xs font-bold text-slate-500 block mb-1">적용 윤활유 비중 (g/cm³)</label>
-            <input type="number" id="comp-sg" value="0.850" step="0.001" min="0.5" max="1.5" oninput="calculateCompensation()" class="w-full px-3 py-2 border border-slate-300 rounded-lg font-bold text-blue-900 bg-slate-50 focus:ring-2 focus:ring-blue-500 focus:outline-none">
+            <input type="number" id="comp-sg" value="0.850" step="0.001" min="0.5" max="1.5" onfocus="handleFocus(this)" oninput="calculateCompensation()" class="w-full px-3 py-2 border border-slate-300 rounded-lg font-bold text-blue-900 bg-slate-50 focus:ring-2 focus:ring-blue-500 focus:outline-none">
           </div>
         </div>
 
@@ -327,7 +327,7 @@
           </div>
           <div id="tare-input-container" class="hidden flex items-center space-x-2">
             <span class="text-xs font-semibold text-slate-500">용기 무게:</span>
-            <input type="number" id="tare-weight" value="45" min="0" step="any" oninput="calculateCompensation()" class="w-20 px-2 py-1 text-xs font-bold border border-slate-300 rounded text-right">
+            <input type="number" id="tare-weight" value="45" min="0" step="any" onfocus="handleFocus(this)" oninput="calculateCompensation()" class="w-20 px-2 py-1 text-xs font-bold border border-slate-300 rounded text-right">
             <span class="text-xs font-semibold text-slate-500">g</span>
           </div>
         </div>
@@ -361,11 +361,11 @@
         <div class="grid grid-cols-1 md:grid-cols-3 gap-4 items-center bg-slate-50 p-4 rounded-xl border border-slate-200">
           <div>
             <label class="text-xs font-semibold text-slate-600 block mb-1">기준 비중 (@15°C)</label>
-            <input type="number" id="temp-base-sg" value="0.850" step="0.001" oninput="calculateTempSG()" class="w-full px-3 py-1.5 border border-slate-300 rounded font-bold text-slate-800 text-sm">
+            <input type="number" id="temp-base-sg" value="0.850" step="0.001" onfocus="handleFocus(this)" oninput="calculateTempSG()" class="w-full px-3 py-1.5 border border-slate-300 rounded font-bold text-slate-800 text-sm">
           </div>
           <div>
             <label class="text-xs font-semibold text-slate-600 block mb-1">현재 충진 탱크 온도 (°C)</label>
-            <input type="number" id="temp-actual-c" value="30" step="1" oninput="calculateTempSG()" class="w-full px-3 py-1.5 border border-slate-300 rounded font-bold text-slate-800 text-sm">
+            <input type="number" id="temp-actual-c" value="30" step="1" onfocus="handleFocus(this)" oninput="calculateTempSG()" class="w-full px-3 py-1.5 border border-slate-300 rounded font-bold text-slate-800 text-sm">
           </div>
           <div class="bg-blue-100/60 p-3 rounded-lg border border-blue-200">
             <span class="text-xs font-bold text-blue-800 block">온도 보정 비중</span>
@@ -530,6 +530,15 @@
 
   <!-- Embedded JavaScript Logic -->
   <script>
+    // Auto-select text inside input field on touch/focus for easy replacement
+    function handleFocus(el) {
+      setTimeout(() => {
+        if (el && typeof el.select === 'function') {
+          el.select();
+        }
+      }, 50);
+    }
+
     let deferredPrompt = null;
 
     // Listen for Chrome/Android native install prompt
@@ -869,4 +878,3 @@
   </script>
 </body>
 </html>
-```
