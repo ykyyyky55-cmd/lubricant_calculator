@@ -31,6 +31,7 @@
 </head>
 <body class="min-h-screen pb-12 text-slate-800">
 
+  <!-- Header Section -->
   <header class="bg-white border-b border-slate-200 sticky top-0 z-50 shadow-sm">
     <div class="max-w-5xl mx-auto px-4 py-3 flex items-center justify-between">
       <div class="flex items-center space-x-3">
@@ -43,12 +44,23 @@
           윤활유 충진 용량/중량 환산 및 보정계산기
         </h1>
       </div>
-      <div class="hidden sm:block text-xs font-medium text-slate-500 bg-slate-100 px-2.5 py-1 rounded-full">
-        v2.0 스마트 충진용
+      
+      <div class="flex items-center space-x-2">
+        <!-- QR Code Trigger Button -->
+        <button onclick="toggleQRModal()" class="flex items-center space-x-1.5 text-xs bg-blue-50 hover:bg-blue-100 text-blue-800 font-semibold px-2.5 py-1.5 rounded-lg border border-blue-200 transition">
+          <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v1m6 11h2m-6 0h-2v4m0-4v-3m0 0h3m-3 0h-3m-2-5h4M6 4h4v4H6V4zm10 0h4v4h-4V4zM6 14h4v4H6v-4z"></path>
+          </svg>
+          <span class="hidden sm:inline">모바일 QR</span>
+        </button>
+        <div class="hidden sm:block text-xs font-medium text-slate-500 bg-slate-100 px-2.5 py-1.5 rounded-full">
+          v2.0 스마트 충진용
+        </div>
       </div>
     </div>
   </header>
 
+  <!-- Main Container -->
   <main class="max-w-5xl mx-auto px-4 mt-6">
 
     <!-- Tab Navigation Bar -->
@@ -348,10 +360,53 @@
 
   </main>
 
-  <!-- Footer -->
-  <footer class="max-w-5xl mx-auto px-4 mt-12 text-center text-xs text-slate-400">
-    <p>© DAELIM LUBRICANTS. All Rights Reserved.</p>
+  <!-- Footer with Embedded QR Code Display -->
+  <footer class="max-w-5xl mx-auto px-4 mt-12 mb-8 text-center">
+    <div class="inline-flex flex-col items-center bg-white p-5 rounded-2xl border border-slate-200 shadow-sm mb-4">
+      <span class="text-xs font-bold text-slate-700 mb-2 flex items-center gap-1.5">
+        📱 모바일 현장 접속 QR 코드
+      </span>
+      <img 
+        src="https://api.qrserver.com/v1/create-qr-code/?size=150x150&data=https://ykyyyky55-cmd.github.io/lubricant_calculator/" 
+        alt="Lubricant Calculator QR Code" 
+        class="w-32 h-32 rounded-lg border border-slate-100 p-1 bg-white shadow-inner"
+      />
+      <span class="text-[11px] font-mono text-slate-500 mt-2 select-all bg-slate-50 px-2 py-1 rounded border border-slate-200">
+        https://ykyyyky55-cmd.github.io/lubricant_calculator/
+      </span>
+    </div>
+    <p class="text-xs text-slate-400">© DAELIM LUBRICANTS. All Rights Reserved.</p>
   </footer>
+
+  <!-- QR Code Modal Popup -->
+  <div id="qr-modal" class="fixed inset-0 bg-slate-900/60 backdrop-blur-sm z-50 flex items-center justify-center p-4 hidden">
+    <div class="bg-white rounded-2xl p-6 max-w-sm w-full text-center shadow-xl border border-slate-100 animate-in fade-in zoom-in duration-200">
+      <div class="flex justify-between items-center mb-4">
+        <h3 class="font-bold text-slate-800 text-base">스마트폰 접속 QR 코드</h3>
+        <button onclick="toggleQRModal()" class="text-slate-400 hover:text-slate-600 p-1">
+          <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path></svg>
+        </button>
+      </div>
+      <div class="bg-slate-50 p-4 rounded-xl border border-slate-200 flex justify-center mb-4">
+        <img 
+          src="https://api.qrserver.com/v1/create-qr-code/?size=200x200&data=https://ykyyyky55-cmd.github.io/lubricant_calculator/" 
+          alt="Lubricant Calculator QR Code" 
+          class="w-44 h-44 rounded-lg bg-white p-2 border border-slate-200 shadow-sm"
+        />
+      </div>
+      <p class="text-xs text-slate-600 mb-3">
+        스마트폰 카메라로 QR 코드를 스캔하면 현장 전용 계산기로 바로 이동합니다.
+      </p>
+      <div class="flex gap-2">
+        <button onclick="copyURL()" class="flex-1 bg-blue-50 hover:bg-blue-100 text-blue-700 text-xs font-bold py-2.5 rounded-xl border border-blue-200 transition">
+          주소 복사하기
+        </button>
+        <button onclick="toggleQRModal()" class="flex-1 bg-slate-800 hover:bg-slate-900 text-white text-xs font-bold py-2.5 rounded-xl transition">
+          닫기
+        </button>
+      </div>
+    </div>
+  </div>
 
   <!-- Embedded JavaScript Logic -->
   <script>
@@ -359,6 +414,20 @@
     let currentVolInML = 1000;
     let minTolPercent = -1.0;
     let maxTolPercent = 0.5;
+
+    function toggleQRModal() {
+      const modal = document.getElementById('qr-modal');
+      modal.classList.toggle('hidden');
+    }
+
+    function copyURL() {
+      const url = "https://ykyyyky55-cmd.github.io/lubricant_calculator/";
+      navigator.clipboard.writeText(url).then(() => {
+        alert("웹사이트 주소가 클립보드에 복사되었습니다!\n" + url);
+      }).catch(() => {
+        prompt("아래 주소를 복사하세요:", url);
+      });
+    }
 
     // Helper function to format weights safely
     function formatWeight(valInGrams, unit) {
@@ -557,7 +626,6 @@
       const baseSG = parseFloat(document.getElementById('temp-base-sg').value) || 0.850;
       const actualTemp = parseFloat(document.getElementById('temp-actual-c').value) || 15;
       
-      // Standard coefficient for petroleum lubricant expansion ~0.00064 / °C
       const tempDiff = actualTemp - 15;
       const correctedSG = baseSG - (tempDiff * 0.00064);
 
