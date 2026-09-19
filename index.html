@@ -51,7 +51,6 @@
 </head>
 <body class="min-h-screen pb-12 text-slate-800">
 
-  <!-- Header Section -->
   <header class="bg-white border-b border-slate-200 sticky top-0 z-40 shadow-sm">
     <div class="max-w-5xl mx-auto px-3 sm:px-4 py-2.5 sm:py-3 flex items-center justify-between">
       <div onclick="switchTab(0)" class="flex items-center space-x-2 sm:space-x-3 cursor-pointer group">
@@ -83,7 +82,6 @@
     </div>
   </header>
 
-  <!-- Main Container -->
   <main class="max-w-5xl mx-auto px-3 sm:px-4 mt-4 sm:mt-6">
 
     <!-- Tab Navigation Bar -->
@@ -212,6 +210,118 @@
 
     <!-- PAGE 1: 용량/중량 환산 및 포장 허용범위 -->
     <div id="page1" class="space-y-4 sm:space-y-6 hidden">
+      <!-- Density Selection Card -->
+      <div class="bg-white rounded-2xl p-4 sm:p-6 shadow-sm border border-slate-200">
+        <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-2 mb-3 sm:mb-4">
+          <label class="text-xs sm:text-base font-bold text-slate-800 flex items-center gap-2">
+            <span class="w-2.5 h-2.5 rounded-full bg-blue-600"></span>
+            윤활유 비중 (Specific Gravity, g/cm³)
+          </label>
+          <div class="flex items-center space-x-2 self-end sm:self-auto">
+            <input type="number" id="sg-input" step="0.001" min="0.700" max="1.100" value="0.850" onfocus="handleFocus(this)" oninput="updateDensityFromInput(this.value)" class="w-20 sm:w-24 px-2 sm:px-3 py-1 sm:py-1.5 border border-slate-300 rounded-lg text-right font-bold text-blue-900 focus:ring-2 focus:ring-blue-500 focus:outline-none text-xs sm:text-sm">
+            <span class="text-xs sm:text-sm font-semibold text-slate-500">g/cm³</span>
+          </div>
+        </div>
+
+        <!-- Density Slider -->
+        <input type="range" id="sg-slider" min="0.750" max="1.000" step="0.001" value="0.850" oninput="updateDensityFromSlider(this.value)" class="w-full h-2 bg-slate-200 rounded-lg appearance-none cursor-pointer accent-blue-700 mb-3 sm:mb-5">
+
+        <!-- Quick Presets -->
+        <div>
+          <span class="text-[11px] sm:text-xs font-semibold text-slate-400 block mb-1.5">대표 윤활유 비중 프리셋</span>
+          <div class="grid grid-cols-2 sm:grid-cols-5 gap-1.5 sm:gap-2">
+            <button onclick="setDensity(0.830)" class="py-1.5 sm:py-2 px-2 bg-slate-100 hover:bg-blue-50 border border-slate-200 hover:border-blue-300 rounded-lg text-xs font-medium text-slate-700 transition">저점도/ATF (0.830)</button>
+            <button onclick="setDensity(0.850)" class="py-1.5 sm:py-2 px-2 bg-slate-100 hover:bg-blue-50 border border-slate-200 hover:border-blue-300 rounded-lg text-xs font-medium text-slate-700 transition">엔진오일 (0.850)</button>
+            <button onclick="setDensity(0.870)" class="py-1.5 sm:py-2 px-2 bg-slate-100 hover:bg-blue-50 border border-slate-200 hover:border-blue-300 rounded-lg text-xs font-medium text-slate-700 transition">유압유 (0.870)</button>
+            <button onclick="setDensity(0.890)" class="py-1.5 sm:py-2 px-2 bg-slate-100 hover:bg-blue-50 border border-slate-200 hover:border-blue-300 rounded-lg text-xs font-medium text-slate-700 transition">기어유 (0.890)</button>
+            <button onclick="setDensity(0.910)" class="py-1.5 sm:py-2 px-2 bg-slate-100 hover:bg-blue-50 border border-slate-200 hover:border-blue-300 rounded-lg text-xs font-medium text-slate-700 transition">중공업유 (0.910)</button>
+          </div>
+        </div>
+
+        <!-- Temperature Correction Option -->
+        <div class="mt-4 pt-3 border-t border-slate-100 flex flex-col sm:flex-row sm:items-center justify-between gap-2 text-xs">
+          <div class="flex items-center space-x-2">
+            <span class="font-bold text-slate-700">충진 오일 온도 보정 (15°C 기준):</span>
+            <input type="number" id="temp-input" value="15" step="1" onfocus="handleFocus(this)" oninput="calculateTempSG()" class="w-16 px-2 py-1 border border-slate-300 rounded text-right font-bold text-slate-800">
+            <span class="text-slate-500">°C</span>
+          </div>
+          <p class="text-[11px] text-slate-400">온도 1°C 상승 시 비중 약 -0.00064 감소 (보정 적용 비중: <span id="base-sg-disp" class="font-bold text-slate-700">0.8500</span>)</p>
+        </div>
+      </div>
+
+      <!-- Volume & Weight Converter Card -->
+      <div class="bg-white rounded-2xl p-4 sm:p-6 shadow-sm border border-slate-200">
+        <h2 class="text-xs sm:text-base font-bold text-slate-800 mb-3 sm:mb-4 flex items-center gap-2">
+          <span class="w-2.5 h-2.5 rounded-full bg-blue-600"></span>
+          용량 선택 및 중량 환산
+        </h2>
+
+        <!-- Quick Volume Buttons -->
+        <div class="mb-4 sm:mb-5">
+          <label class="text-[11px] sm:text-xs font-semibold text-slate-400 block mb-1.5 sm:mb-2">지정 용량 빠른 선택</label>
+          <div class="flex flex-wrap gap-1 sm:gap-1.5">
+            <button onclick="selectPresetVolume(100, 'ml')" class="px-2 sm:px-2.5 py-1 sm:py-1.5 bg-slate-100 hover:bg-blue-600 hover:text-white rounded-md text-xs font-medium transition">100ml</button>
+            <button onclick="selectPresetVolume(350, 'ml')" class="px-2 sm:px-2.5 py-1 sm:py-1.5 bg-slate-100 hover:bg-blue-600 hover:text-white rounded-md text-xs font-medium transition">350ml</button>
+            <button onclick="selectPresetVolume(500, 'ml')" class="px-2 sm:px-2.5 py-1 sm:py-1.5 bg-slate-100 hover:bg-blue-600 hover:text-white rounded-md text-xs font-medium transition">500ml</button>
+            <button onclick="selectPresetVolume(700, 'ml')" class="px-2 sm:px-2.5 py-1 sm:py-1.5 bg-slate-100 hover:bg-blue-600 hover:text-white rounded-md text-xs font-medium transition">700ml</button>
+            <button onclick="selectPresetVolume(750, 'ml')" class="px-2 sm:px-2.5 py-1 sm:py-1.5 bg-slate-100 hover:bg-blue-600 hover:text-white rounded-md text-xs font-medium transition">750ml</button>
+            <button onclick="selectPresetVolume(1000, 'ml')" class="px-2 sm:px-2.5 py-1 sm:py-1.5 bg-slate-100 hover:bg-blue-600 hover:text-white rounded-md text-xs font-medium transition">1,000ml</button>
+            <button onclick="selectPresetVolume(2000, 'ml')" class="px-2 sm:px-2.5 py-1 sm:py-1.5 bg-slate-100 hover:bg-blue-600 hover:text-white rounded-md text-xs font-medium transition">2,000ml</button>
+            <button onclick="selectPresetVolume(3000, 'ml')" class="px-2 sm:px-2.5 py-1 sm:py-1.5 bg-slate-100 hover:bg-blue-600 hover:text-white rounded-md text-xs font-medium transition">3,000ml</button>
+            <button onclick="selectPresetVolume(4000, 'ml')" class="px-2 sm:px-2.5 py-1 sm:py-1.5 bg-slate-100 hover:bg-blue-600 hover:text-white rounded-md text-xs font-medium transition">4,000ml</button>
+            <button onclick="selectPresetVolume(6000, 'ml')" class="px-2 sm:px-2.5 py-1 sm:py-1.5 bg-slate-100 hover:bg-blue-600 hover:text-white rounded-md text-xs font-medium transition">6,000ml</button>
+            <button onclick="selectPresetVolume(10, 'L')" class="px-2 sm:px-2.5 py-1 sm:py-1.5 bg-slate-100 hover:bg-blue-600 hover:text-white rounded-md text-xs font-medium transition">10L</button>
+            <button onclick="selectPresetVolume(20, 'L')" class="px-2 sm:px-2.5 py-1 sm:py-1.5 bg-slate-100 hover:bg-blue-600 hover:text-white rounded-md text-xs font-medium transition">20L</button>
+            <button onclick="selectPresetVolume(100, 'L')" class="px-2 sm:px-2.5 py-1 sm:py-1.5 bg-slate-100 hover:bg-blue-600 hover:text-white rounded-md text-xs font-medium transition">100L</button>
+            <button onclick="selectPresetVolume(200, 'L')" class="px-2 sm:px-2.5 py-1 sm:py-1.5 bg-slate-100 hover:bg-blue-600 hover:text-white rounded-md text-xs font-medium transition">200L</button>
+            <button onclick="selectPresetVolume(1000, 'L')" class="px-2 sm:px-2.5 py-1 sm:py-1.5 bg-slate-100 hover:bg-blue-600 hover:text-white rounded-md text-xs font-medium transition">1,000L</button>
+          </div>
+        </div>
+
+        <!-- Custom Direct Input Grid -->
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-3 sm:gap-4">
+          <!-- Volume Input -->
+          <div class="bg-slate-50 p-3.5 sm:p-4 rounded-xl border border-slate-200">
+            <label class="text-[11px] sm:text-xs font-bold text-slate-500 uppercase tracking-wider block mb-1.5">충진 용량 (부피)</label>
+            <div class="flex">
+              <input type="number" id="vol-val" value="1000" onfocus="handleFocus(this)" oninput="calculateFromVolume()" class="flex-1 px-3 py-2 bg-white border border-slate-300 rounded-l-xl font-bold text-base sm:text-lg text-slate-800 focus:ring-2 focus:ring-blue-500 focus:outline-none">
+              <select id="vol-unit" onchange="calculateFromVolume()" class="bg-slate-200 border border-l-0 border-slate-300 rounded-r-xl px-2.5 font-semibold text-slate-700 text-xs sm:text-sm">
+                <option value="ml">mL</option>
+                <option value="L">L</option>
+              </select>
+            </div>
+          </div>
+
+          <!-- Weight Output Card (Dual Units Displayed) -->
+          <div class="bg-blue-50/80 p-3.5 sm:p-4 rounded-xl border border-blue-200">
+            <label class="text-[11px] sm:text-xs font-bold text-blue-700 uppercase tracking-wider block mb-1.5">환산 순 중량 (Net Weight)</label>
+            <div class="flex items-baseline space-x-2">
+              <span id="res-weight-primary" class="text-xl sm:text-2xl font-black text-blue-900">850 g</span>
+              <span id="res-weight-secondary" class="text-xs sm:text-sm font-semibold text-blue-600">(0.850 kg)</span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Packaging Tolerance Settings Card -->
+      <div class="bg-white rounded-2xl p-4 sm:p-6 shadow-sm border border-slate-200">
+        <div class="flex flex-col md:flex-row md:items-center justify-between gap-2 sm:gap-4 mb-3 sm:mb-4">
+          <h2 class="text-xs sm:text-base font-bold text-slate-800 flex items-center gap-2">
+            <span class="w-2.5 h-2.5 rounded-full bg-blue-600"></span>
+            포장 중량 허용범위 설정
+          </h2>
+          <!-- Preset Tolerance Buttons -->
+          <div class="flex items-center gap-1 sm:gap-1.5 flex-wrap">
+            <span class="text-[11px] text-slate-400 mr-0.5">오차 규격:</span>
+            <button onclick="setTolerancePreset(-0.25, 0.25)" class="px-2 py-0.5 sm:py-1 bg-slate-100 hover:bg-slate-200 rounded text-xs font-medium text-slate-700">-0.25% ~ +0.25%</button>
+            <button onclick="setTolerancePreset(-0.5, 0.5)" class="px-2 py-0.5 sm:py-1 bg-slate-100 hover:bg-slate-200 rounded text-xs font-medium text-slate-700">-0.5% ~ +0.5%</button>
+            <button onclick="setTolerancePreset(-1.0, 0.5)" class="px-2 py-0.5 sm:py-1 bg-slate-100 hover:bg-slate-200 rounded text-xs font-medium text-slate-700">-1.0% ~ +0.5%</button>
+            <button onclick="setTolerancePreset(-1.5, 1.0)" class="px-2 py-0.5 sm:py-1 bg-slate-100 hover:bg-slate-200 rounded text-xs font-medium text-slate-700">-1.5% ~ +1.0%</button>
+            <button onclick="setTolerancePreset(0.0, 1.0)" class="px-2 py-0.5 sm:py-1 bg-slate-100 hover:bg-slate-200 rounded text-xs font-medium text-slate-700">0% ~ +1.0%</button>
+          </div>
+        </div>
+
+        <!-- Custom Min/Max Inputs -->
         <div class="grid grid-cols-2 gap-3 sm:gap-4 mb-4 sm:mb-5">
           <div class="flex items-center space-x-2">
             <label class="text-xs font-semibold text-slate-600 shrink-0">최저 허용 오차:</label>
@@ -391,7 +501,7 @@
         <div class="space-y-3 text-xs text-slate-600">
           <div class="p-3 bg-slate-50 rounded-xl border border-slate-200">
             <h3 class="font-bold text-slate-800 mb-0.5">1. 온도 변화에 따른 윤활유 팽창/수축 보정</h3>
-            <p>윤활유는 온도가 1°C 상승할 때마다 부피가 약 $0.00064 / \text{°C}$ 비율로 팽창합니다. 오일 온도가 상승하면 동일 부피 충진 시 중량이 가벼워집니다.</p>
+            <p>윤활유는 온도가 1°C 상승할 때마다 부피가 약 0.00064 / °C 비율로 팽창합니다. 오일 온도가 상승하면 동일 부피 충진 시 중량이 가벼워집니다.</p>
           </div>
           <div class="p-3 bg-slate-50 rounded-xl border border-slate-200">
             <h3 class="font-bold text-slate-800 mb-0.5">2. 용기 자체 무게(Tare Weight) 오차 확인</h3>
@@ -766,6 +876,11 @@
 
   <!-- JavaScript Logic -->
   <script>
+    // 💡 [기본 API 키 설정 구역]
+    // Google AI Studio에서 발급받은 무료 API 키를 아래 큰따옴표("") 안에 넣어주시면,
+    // 이 계산기에 접속하는 모든 사용자가 별도의 API 키 입력 없이 바로 AI 사진 스캔 기능을 사용할 수 있습니다.
+    const DEFAULT_API_KEY = ""; 
+
     let currentSG = 0.850;
     let baseSG = 0.850;
     let currentVolInML = 1000;
@@ -774,15 +889,23 @@
     let deferredPrompt = null;
     let customApiKey = localStorage.getItem('gemini_user_api_key') || "";
 
+    // Auto Select (한번에 전체 선택) Event Handler
+    function handleFocus(inputEl) {
+      if (inputEl && typeof inputEl.select === 'function') {
+        setTimeout(() => inputEl.select(), 50);
+      }
+    }
+
     function getActiveApiKey() {
-      return customApiKey || "";
+      // 사용자가 직접 저장한 키가 있으면 최우선 적용, 없으면 기본 내장 키(DEFAULT_API_KEY) 적용
+      return customApiKey || DEFAULT_API_KEY || "";
     }
 
     function openApiKeyModal(noticeText) {
       const modal = document.getElementById('api-key-modal');
       const input = document.getElementById('user-api-key-input');
       const notice = document.getElementById('api-key-notice');
-      if (input) input.value = customApiKey;
+      if (input) input.value = customApiKey || DEFAULT_API_KEY;
       if (notice && noticeText) notice.innerText = noticeText;
       if (modal) modal.classList.remove('hidden');
     }
@@ -797,9 +920,29 @@
       if (input) {
         customApiKey = input.value.trim();
         localStorage.setItem('gemini_user_api_key', customApiKey);
-        alert(customApiKey ? "API 키가 저장되었습니다!" : "API 키 설정이 초기화되었습니다.");
+        alert(customApiKey ? "개인 API 키가 저장되었습니다!" : "API 키 설정이 초기화되었습니다.");
         closeApiKeyModal();
       }
+    }
+
+    function formatWeight(valInGrams, unit) {
+      if (unit === 'g') {
+        if (Number.isInteger(valInGrams)) {
+          return valInGrams.toLocaleString() + ' g';
+        }
+        return valInGrams.toFixed(1) + ' g';
+      } else if (unit === 'kg') {
+        const valInKg = valInGrams / 1000;
+        if (valInKg < 1) {
+          return valInKg.toFixed(3) + ' kg';
+        } else {
+          if (Number.isInteger(valInKg)) {
+            return valInKg.toLocaleString() + ' kg';
+          }
+          return valInKg.toFixed(1) + ' kg';
+        }
+      }
+      return valInGrams + ' ' + unit;
     }
 
     function switchTab(tabIndex) {
@@ -1248,7 +1391,7 @@
       const fileContent = `[InternetShortcut]\nURL=${url}\nIconIndex=0`;
       const blob = new Blob([fileContent], { type: 'text/plain' });
       const a = document.createElement('a');
-      a.href = URL.createObjectURL(URL.createObjectURL(blob));
+      a.href = URL.createObjectURL(blob);
       a.download = '윤활유 보정계산기.url';
       a.click();
     }
@@ -1290,7 +1433,6 @@
             resolve({ base64Data, mimeType: 'image/jpeg' });
           };
           img.onerror = () => {
-            // Fallback if image load fails
             fileToBase64Data(file).then(b64 => resolve({ base64Data: b64, mimeType: file.type || 'image/jpeg' }));
           };
           img.src = e.target.result;
@@ -1303,6 +1445,13 @@
     }
 
     async function processMachineImageFile(file) {
+      const apiKey = getActiveApiKey();
+      
+      if (!apiKey) {
+        openApiKeyModal("공용 API 키가 설정되지 않았거나 키가 필요합니다. Google AI Studio에서 무료로 발급받은 Gemini API 키를 입력해 주세요.");
+        return;
+      }
+
       // Show AI Loading Modal
       const loadingModal = document.getElementById('ai-loading-modal');
       if (loadingModal) loadingModal.classList.remove('hidden');
@@ -1311,7 +1460,6 @@
         // Compress photo to prevent memory/payload issues on high-res phone cameras
         const { base64Data, mimeType } = await compressAndResizeImage(file);
 
-        const apiKey = getActiveApiKey();
         const apiUrl = `https://generativelanguage.googleapis.com/v1beta/models/gemini-3-flash-preview:generateContent?key=${apiKey}`;
 
         const systemPrompt = "You are an industrial OCR expert. Examine the photo (PLC screen, digital monitor, paper log, scale display, or machine panel) and extract the numeric values for 6 filling machine lines/nozzles (Line 1 to Line 6). Extract numeric values only in order for Line 1, Line 2, Line 3, Line 4, Line 5, Line 6. Return ONLY a valid JSON object matching the requested schema.";
@@ -1349,10 +1497,9 @@
           body: JSON.stringify(payload)
         });
 
-        // Auto-detect missing/invalid API key on GitHub Pages deployment
         if (response.status === 400 || response.status === 403) {
           if (loadingModal) loadingModal.classList.add('hidden');
-          openApiKeyModal("GitHub Pages 환경에서는 Google AI 스캔 기능을 작동하기 위해 무료 Gemini API 키가 필요합니다. API 키를 설정해 주세요.");
+          openApiKeyModal("등록된 API 키가 올바르지 않거나 유효하지 않습니다. 새로운 무료 Gemini API 키를 입력해 주세요.");
           return;
         }
 
@@ -1386,7 +1533,6 @@
           calculateMultiLineCompensation();
 
           if (updatedCount > 0) {
-            // Success alert with extracted values
             setTimeout(() => {
               alert(`✨ AI 사진 인식 성공! (${updatedCount}개 라인 수치 추출됨)\n\n[추출 결과]\n` + summaryList.join("\n") + "\n\n실측값을 입력하여 권장 설정값을 확인하세요.");
             }, 100);
