@@ -6,7 +6,9 @@
   <meta name="apple-mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
   <meta name="apple-mobile-web-app-title" content="윤활유 보정계산기">
-  <link rel="apple-touch-icon" href="https://api.qrserver.com/v1/create-qr-code/?size=180x180&data=https://ykyyyky55-cmd.github.io/lubricant_calculator/">
+  <!-- App Favicon & Apple Touch Icon (SVG Data URI) -->
+  <link rel="icon" type="image/svg+xml" href="data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 512 512'><defs><linearGradient id='bg' x1='0%' y1='0%' x2='100%' y2='100%'><stop offset='0%' stop-color='%2300297A'/><stop offset='100%' stop-color='%230055FF'/></linearGradient><linearGradient id='drop' x1='0%' y1='0%' x2='100%' y2='100%'><stop offset='0%' stop-color='%23FFD700'/><stop offset='100%' stop-color='%23FF8C00'/></linearGradient></defs><rect width='512' height='512' rx='112' fill='url(%23bg)'/><circle cx='256' cy='280' r='130' fill='none' stroke='%23ffffff' stroke-opacity='0.25' stroke-width='12' stroke-dasharray='12 16'/><path d='M256 100 C256 100 150 240 150 315 C150 373.6 197.4 421 256 421 C314.6 421 362 373.6 362 315 C362 240 256 100 256 100 Z' fill='url(%23drop)'/><path d='M222 312 L248 338 L294 286' fill='none' stroke='%2300297A' stroke-width='24' stroke-linecap='round' stroke-linejoin='round'/></svg>">
+  <link rel="apple-touch-icon" href="data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 512 512'><defs><linearGradient id='bg' x1='0%' y1='0%' x2='100%' y2='100%'><stop offset='0%' stop-color='%2300297A'/><stop offset='100%' stop-color='%230055FF'/></linearGradient><linearGradient id='drop' x1='0%' y1='0%' x2='100%' y2='100%'><stop offset='0%' stop-color='%23FFD700'/><stop offset='100%' stop-color='%23FF8C00'/></linearGradient></defs><rect width='512' height='512' rx='112' fill='url(%23bg)'/><circle cx='256' cy='280' r='130' fill='none' stroke='%23ffffff' stroke-opacity='0.25' stroke-width='12' stroke-dasharray='12 16'/><path d='M256 100 C256 100 150 240 150 315 C150 373.6 197.4 421 256 421 C314.6 421 362 373.6 362 315 C362 240 256 100 256 100 Z' fill='url(%23drop)'/><path d='M222 312 L248 338 L294 286' fill='none' stroke='%2300297A' stroke-width='24' stroke-linecap='round' stroke-linejoin='round'/></svg>">
   <title>윤활유 충진 용량/중량 환산 및 보정계산기</title>
   <script src="https://cdn.tailwindcss.com"></script>
   <style>
@@ -50,10 +52,28 @@
   <header class="bg-white border-b border-slate-200 sticky top-0 z-50 shadow-sm">
     <div class="max-w-5xl mx-auto px-3 sm:px-4 py-2.5 sm:py-3 flex items-center justify-between gap-2">
       <div class="flex items-center space-x-2 sm:space-x-3 min-w-0">
-        <!-- DAELIM Vector Logo -->
-        <svg class="h-6 sm:h-7 md:h-8 w-auto fill-[#003BA8] shrink-0" viewBox="0 0 320 60" xmlns="http://www.w3.org/2000/svg">
-          <text x="0" y="50" font-family="'Arial Black', 'Impact', sans-serif" font-weight="900" font-size="58" letter-spacing="-1.5">DAELIM</text>
-        </svg>
+        <!-- App Custom SVG Icon & DAELIM Vector Logo -->
+        <div class="flex items-center space-x-2 shrink-0">
+          <svg class="w-7 h-7 sm:w-8 sm:h-8 rounded-xl shadow-sm" viewBox="0 0 512 512" xmlns="http://www.w3.org/2000/svg">
+            <defs>
+              <linearGradient id="hdr-bg" x1="0%" y1="0%" x2="100%" y2="100%">
+                <stop offset="0%" stop-color="#00297A"/>
+                <stop offset="100%" stop-color="#0055FF"/>
+              </linearGradient>
+              <linearGradient id="hdr-drop" x1="0%" y1="0%" x2="100%" y2="100%">
+                <stop offset="0%" stop-color="#FFD700"/>
+                <stop offset="100%" stop-color="#FF8C00"/>
+              </linearGradient>
+            </defs>
+            <rect width="512" height="512" rx="112" fill="url(#hdr-bg)"/>
+            <circle cx="256" cy="280" r="130" fill="none" stroke="#ffffff" stroke-opacity="0.25" stroke-width="12" stroke-dasharray="12 16"/>
+            <path d="M256 100 C256 100 150 240 150 315 C150 373.6 197.4 421 256 421 C314.6 421 362 373.6 362 315 C362 240 256 100 256 100 Z" fill="url(#hdr-drop)"/>
+            <path d="M222 312 L248 338 L294 286" fill="none" stroke="#00297A" stroke-width="24" stroke-linecap="round" stroke-linejoin="round"/>
+          </svg>
+          <svg class="h-6 sm:h-7 md:h-8 w-auto fill-[#003BA8]" viewBox="0 0 320 60" xmlns="http://www.w3.org/2000/svg">
+            <text x="0" y="50" font-family="'Arial Black', 'Impact', sans-serif" font-weight="900" font-size="58" letter-spacing="-1.5">DAELIM</text>
+          </svg>
+        </div>
         <div class="h-5 sm:h-6 w-px bg-slate-300 shrink-0"></div>
         <h1 class="text-xs sm:text-base md:text-xl font-bold text-slate-800 tracking-tight truncate">
           윤활유 충진 보정계산기
@@ -436,8 +456,24 @@
   <div id="widget-modal" class="fixed inset-0 bg-slate-900/60 backdrop-blur-sm z-50 flex items-center justify-center p-4 hidden">
     <div class="bg-white rounded-2xl p-5 sm:p-6 max-w-md w-full text-left shadow-2xl border border-slate-100 animate-in fade-in zoom-in duration-200">
       <div class="flex justify-between items-center mb-4 border-b border-slate-100 pb-3">
-        <div class="flex items-center space-x-2">
-          <div class="w-8 h-8 rounded-xl bg-blue-600 text-white flex items-center justify-center font-bold text-sm">📱</div>
+        <div class="flex items-center space-x-2.5">
+          <!-- Custom App Icon inside Modal -->
+          <svg class="w-9 h-9 rounded-xl shadow-md shrink-0" viewBox="0 0 512 512" xmlns="http://www.w3.org/2000/svg">
+            <defs>
+              <linearGradient id="mdl-bg" x1="0%" y1="0%" x2="100%" y2="100%">
+                <stop offset="0%" stop-color="#00297A"/>
+                <stop offset="100%" stop-color="#0055FF"/>
+              </linearGradient>
+              <linearGradient id="mdl-drop" x1="0%" y1="0%" x2="100%" y2="100%">
+                <stop offset="0%" stop-color="#FFD700"/>
+                <stop offset="100%" stop-color="#FF8C00"/>
+              </linearGradient>
+            </defs>
+            <rect width="512" height="512" rx="112" fill="url(#mdl-bg)"/>
+            <circle cx="256" cy="280" r="130" fill="none" stroke="#ffffff" stroke-opacity="0.25" stroke-width="12" stroke-dasharray="12 16"/>
+            <path d="M256 100 C256 100 150 240 150 315 C150 373.6 197.4 421 256 421 C314.6 421 362 373.6 362 315 C362 240 256 100 256 100 Z" fill="url(#mdl-drop)"/>
+            <path d="M222 312 L248 338 L294 286" fill="none" stroke="#00297A" stroke-width="24" stroke-linecap="round" stroke-linejoin="round"/>
+          </svg>
           <div>
             <h3 class="font-bold text-slate-800 text-sm sm:text-base">바탕화면 위젯 / 앱 추가 안내</h3>
             <p class="text-[11px] text-slate-400">앱처럼 바로 실행할 수 있도록 홈 화면에 설치합니다.</p>
@@ -834,5 +870,3 @@
 </body>
 </html>
 ```
-
-위 수정본을 GitHub 저장소에 커밋/업로드하시면 오류 없이 작동합니다!
